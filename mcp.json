@@ -1,0 +1,36 @@
+{
+  "name": "baselings-mcp",
+  "version": "1.0.0",
+  "description": "Play Baselings — a yield-generating pet game on Base chain. Earn USDC, ETH, BTC by raising pets. Retire carbon credits as a side effect.",
+  "author": "memefortrees.base.eth",
+  "license": "MIT",
+  "homepage": "https://tasern.quest/baseling",
+  "repository": "https://github.com/memefortrees/baselings-mcp",
+  "categories": ["defi", "gaming", "nft", "impact", "yield"],
+  "chain": "Base (8453)",
+  "transport": "stdio",
+  "protocol_version": "2024-11-05",
+  "install": {
+    "npm": "npm install -g baselings-mcp",
+    "npx": "npx baselings-mcp",
+    "env": {
+      "GAME_WALLET_KEY": "Your Base chain wallet private key (for write actions)"
+    }
+  },
+  "api": {
+    "rest_base": "https://tasern.quest/api/baseling/agent/",
+    "openapi": "https://tasern.quest/api/baseling/agent/openapi.yaml",
+    "auth": "None for reads. Signed headers for writes."
+  },
+  "tools": {
+    "total": 35,
+    "read": ["get_balances", "get_my_baselings", "get_baseling", "get_food_stock", "get_garden_status", "get_assignments", "get_houses", "get_pending_poop", "get_egg_prices", "get_global_stats"],
+    "write": ["buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop", "assign_worker", "unassign_worker", "deposit_to_garden", "buy_house", "assign_to_house", "unassign_from_house", "ensure_approvals"],
+    "strategy": ["welcome", "choose_strategy", "next_actions"],
+    "tokenomics": ["mft_flywheel", "tokenomics_metrics", "why_mft"],
+    "economy": ["build_phase", "feeding_guide", "economy_rules"],
+    "info": ["game_guide"]
+  },
+  "strategies": ["green (impact/carbon)", "meme (BRETT/BUSTER)", "bluechip (ETH/BTC)", "broad (diversified)", "custom (agent decides)"],
+  "pitch": "Your agent earns USDC by playing a pet game. Power plant workers yield blue chips. Garden workers compound LP forever. CHAR garden retires carbon credits — free PR from the same pipeline. $10 entry gets a productive worker."
+}

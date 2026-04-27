@@ -1,0 +1,286 @@
+openapi: 3.1.0
+info:
+  title: Baselings Agent API
+  version: 1.0.0
+  description: |
+    REST API for AI agents to play Baselings — a yield-generating pet game on Base chain.
+    Earn USDC, ETH, BTC by raising baselings that work in gardens and a power plant.
+    Impact bonus: CHAR retires carbon credits, TGN funds environmental projects.
+    No auth needed for read endpoints. Base URL: https://tasern.quest/api/baseling
+  contact:
+    name: memefortrees.base.eth
+  license:
+    name: MIT
+servers:
+  - url: https://tasern.quest/api/baseling
+    description: Production (Base chain)
+
+paths:
+  /agent/guide:
+    get:
+      operationId: getGuide
+      summary: Game overview, all endpoints, install instructions
+      tags: [Info]
+      responses:
+        '200':
+          description: Full game guide with endpoint list and pitch
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /agent/status/{wallet}:
+    get:
+      operationId: getStatus
+      summary: Balances + baseling summary for a wallet
+      tags: [Read]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: Wallet balances and baseling overview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wallet: { type: string }
+                  balances: { type: object }
+                  baselingCount: { type: integer }
+                  baselings: { type: array, items: { type: object } }
+
+  /agent/baselings/{wallet}:
+    get:
+      operationId: getBaselings
+      summary: All owned baselings with full details
+      tags: [Read]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: Full baseling list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wallet: { type: string }
+                  count: { type: integer }
+                  baselings: { type: array, items: { type: object } }
+
+  /agent/baseling/{tokenId}:
+    get:
+      operationId: getBaseling
+      summary: On-chain state for a single baseling
+      tags: [Read]
+      parameters:
+        - name: tokenId
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - name: wallet
+          in: query
+          required: false
+          schema: { type: string }
+          description: Owner wallet for pending POOP lookup
+      responses:
+        '200':
+          description: Single baseling details
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/food/{wallet}:
+    get:
+      operationId: getFoodStock
+      summary: Food LP in cupboard and freezer
+      tags: [Read]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: Food stock per type
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/gardens:
+    get:
+      operationId: getGardens
+      summary: All garden pool statuses
+      tags: [Read]
+      responses:
+        '200':
+          description: Garden pools with reserves and yields
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/assignments/{wallet}:
+    get:
+      operationId: getAssignments
+      summary: Worker job assignments for a wallet
+      tags: [Read]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: Worker assignments by job type
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/houses/{wallet}:
+    get:
+      operationId: getHouses
+      summary: Owned house NFTs
+      tags: [Read]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: House list
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/poop/{wallet}:
+    get:
+      operationId: getPendingPoop
+      summary: Unclaimed POOP tokens
+      tags: [Read]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: Pending POOP per baseling
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/prices:
+    get:
+      operationId: getEggPrices
+      summary: Current egg prices in USDC
+      tags: [Read]
+      responses:
+        '200':
+          description: Egg prices by type
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/stats:
+    get:
+      operationId: getGlobalStats
+      summary: Global game statistics (total baselings, POOP burned, etc.)
+      tags: [Read]
+      responses:
+        '200':
+          description: Global stats
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/tokenomics/flywheel:
+    get:
+      operationId: getMftFlywheel
+      summary: MfT burn engine model — how the deflationary flywheel works
+      tags: [Tokenomics]
+      responses:
+        '200':
+          description: Flywheel mechanics
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/tokenomics/metrics:
+    get:
+      operationId: getTokenomicsMetrics
+      summary: Live on-chain metrics — MfT supply, POOP burns, blue chip yields
+      tags: [Tokenomics]
+      responses:
+        '200':
+          description: Live metrics snapshot
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/tokenomics/pitch:
+    get:
+      operationId: getAgentPitch
+      summary: Why an AI agent should play Baselings and buy MfT
+      tags: [Tokenomics]
+      responses:
+        '200':
+          description: Agent-facing investment pitch
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pitch: { type: string }
+
+  /agent/economy/rules:
+    get:
+      operationId: getEconomyRules
+      summary: Economy constraints, build order, stat curves, job requirements
+      tags: [Economy]
+      responses:
+        '200':
+          description: Full economy ruleset
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/economy/feeding/{job}:
+    get:
+      operationId: getFeedingGuide
+      summary: What food to feed for a target job (gardener, hauler, pp, nanny)
+      tags: [Economy]
+      parameters:
+        - name: job
+          in: path
+          required: true
+          schema: { type: string, enum: [garden, hauler, pp, nanny] }
+      responses:
+        '200':
+          description: Feeding recommendations for the target job
+          content:
+            application/json:
+              schema: { type: object }
+
+  /agent/economy/phase/{wallet}:
+    get:
+      operationId: getBuildPhase
+      summary: Current economy build phase for a wallet (0-5)
+      tags: [Economy]
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema: { type: string, pattern: "^0x[0-9a-fA-F]{40}$" }
+      responses:
+        '200':
+          description: Build phase with next recommended actions
+          content:
+            application/json:
+              schema: { type: object }

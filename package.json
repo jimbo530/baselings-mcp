@@ -1,0 +1,56 @@
+{
+  "name": "baselings-mcp",
+  "version": "1.0.0",
+  "description": "MCP server + SDK for AI agents to play Baselings — a Tamagotchi-meets-DeFi pet game on Base chain. Feed pets, earn POOP, burn MfT, do real-world good.",
+  "main": "index.js",
+  "bin": {
+    "baselings-mcp": "mcp-server.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "baselings",
+    "base-chain",
+    "defi",
+    "nft",
+    "tamagotchi",
+    "ai-agent",
+    "mft",
+    "poop",
+    "impact",
+    "deflationary",
+    "lp",
+    "yield"
+  ],
+  "author": "memefortrees.base.eth",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jimbo530/baselings-mcp"
+  },
+  "homepage": "https://tasern.quest/baseling",
+  "files": [
+    "index.js",
+    "mcp-server.js",
+    "contracts.js",
+    "state.js",
+    "actions.js",
+    "strategies.js",
+    "tokenomics.js",
+    "api-routes.js",
+    "mount.js",
+    "openapi.yaml",
+    "mcp.json",
+    "claude-desktop-config.example.json",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "ethers": "^6.0.0"
+  },
+  "dependencies": {
+    "ethers": "^6.16.0"
+  }
+}
