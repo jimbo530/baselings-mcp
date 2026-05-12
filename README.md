@@ -53,6 +53,20 @@ export GAME_WALLET_KEY=0x...
 npx baselings-mcp
 ```
 
+### Agent-safety env vars (recommended)
+
+For an AI-agent-driven wallet, set these to cap blast radius:
+
+| Var | Effect | Recommended |
+|-----|--------|-------------|
+| `BASELINGS_MODE=read` | Disable all write tools (read-only). Server still starts. | Use while testing prompts / new agents. |
+| `MAX_USDC_PER_TX=<usd>` | Reject any single tool call that would spend more than this. | `5` (cost of giant egg) or your per-action ceiling. |
+| `MAX_USDC_PER_DAY=<usd>` | Reject calls when today's cumulative USDC spend would exceed this. UTC day. | `50` for a casual agent; tune per use case. |
+| `BASELINGS_LOG_FILE=<path>` | Append one JSONL line per tx-emitting tool call (tool name, args, tx hash, wallet, timestamp). | `~/.baselings-mcp/audit.log` |
+| `BASELINGS_INFINITE_APPROVALS=1` | Revert to MAX_UINT256 token approvals. | **Don't.** Default is per-action exact amount. |
+
+Spend caps are best-effort soft caps — the contract still enforces balance and any on-chain limits. The in-memory daily counter resets on process restart; use `BASELINGS_LOG_FILE` for a durable record.
+
 ### Claude Desktop config
 
 ```json
