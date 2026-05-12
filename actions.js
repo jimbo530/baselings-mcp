@@ -24,12 +24,22 @@ async function waitForTx(tx) {
   }
 }
 
-// Internal: check allowance and approve if needed
+// Internal: check allowance and approve if needed.
+//
+// Approves the exact `amount` requested rather than MAX_UINT256. For an
+// agent-driven hot wallet this matters: a future buggy upgrade or
+// compromise of `spender` can only drain up to the current allowance,
+// not the entire token balance. Set BASELINGS_INFINITE_APPROVALS=1 to
+// opt back into MAX_UINT256 (saves one approve tx per session — not
+// recommended for agent wallets).
 async function _ensureAllowance(tokenContract, owner, spender, amount) {
   try {
     const current = await tokenContract.allowance(owner, spender);
     if (current >= amount) return null; // already approved
-    const tx = await tokenContract.approve(spender, MAX_UINT256);
+    const approveAmount = process.env.BASELINGS_INFINITE_APPROVALS === '1'
+      ? MAX_UINT256
+      : amount;
+    const tx = await tokenContract.approve(spender, approveAmount);
     const receipt = await waitForTx(tx);
     return receipt.hash;
   } catch (e) {
@@ -40,37 +50,19 @@ async function _ensureAllowance(tokenContract, owner, spender, amount) {
 
 // ── SETUP ───────────────────────────────────────────────────────────────────
 
+// Pre-approves only the NFT setApprovalForAll (one-time, per-collection).
+// USDC/POOP allowances are NOT blanket-approved — each write action requests
+// the exact amount it needs. This means a future compromise of
+// Router/Pantry/BaselingState can only drain currently-pending per-action
+// approvals, not the entire token balance.
 async function ensureApprovals(ctx) {
   try {
     const { wallet, contracts } = ctx;
     const addr = wallet.address;
     const approved = [];
 
-    // USDC → Router (egg buying + food)
-    const usdcRouter = await _ensureAllowance(
-      contracts.usdc, addr, CONTRACTS.ROUTER, MAX_UINT256
-    );
-    if (usdcRouter) approved.push({ token: 'USDC', spender: 'Router', tx: usdcRouter });
-
-    // POOP → Router
-    const poopRouter = await _ensureAllowance(
-      contracts.poop, addr, CONTRACTS.ROUTER, MAX_UINT256
-    );
-    if (poopRouter) approved.push({ token: 'POOP', spender: 'Router', tx: poopRouter });
-
-    // POOP → Pantry
-    const poopPantry = await _ensureAllowance(
-      contracts.poop, addr, CONTRACTS.PANTRY, MAX_UINT256
-    );
-    if (poopPantry) approved.push({ token: 'POOP', spender: 'Pantry', tx: poopPantry });
-
-    // POOP → BaselingState (deposits)
-    const poopState = await _ensureAllowance(
-      contracts.poop, addr, CONTRACTS.BASELING_STATE, MAX_UINT256
-    );
-    if (poopState) approved.push({ token: 'POOP', spender: 'BaselingState', tx: poopState });
-
-    // NFT → setApprovalForAll for game wallet (Router needs to move NFTs)
+    // NFT → setApprovalForAll for Router (allows Router to move user's NFTs).
+    // This is per-collection authorization, not a token-amount allowance.
     const nftApprovedRouter = await contracts.nftRead.isApprovedForAll(addr, CONTRACTS.ROUTER);
     if (!nftApprovedRouter) {
       const tx = await contracts.nft.setApprovalForAll(CONTRACTS.ROUTER, true);
@@ -78,7 +70,12 @@ async function ensureApprovals(ctx) {
       approved.push({ token: 'BaselingNFT', spender: 'Router', tx: receipt.hash });
     }
 
-    return { ok: true, approved };
+    return {
+      ok: true,
+      approved,
+      note: 'USDC/POOP allowances are now set per-action with exact amounts. ' +
+            'Set BASELINGS_INFINITE_APPROVALS=1 to opt back into MAX_UINT256 approvals (not recommended for agent wallets).',
+    };
   } catch (e) {
     console.error('[actions] ensureApprovals:', e.message);
     return { ok: false, error: e.message };

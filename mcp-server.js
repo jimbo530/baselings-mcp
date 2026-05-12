@@ -1,8 +1,20 @@
 #!/usr/bin/env node
 // Baselings MCP Server — exposes all game actions as MCP tools
 // Transport: stdin/stdout JSON-RPC (no extra deps beyond ethers)
+//
+// Required env:
+//   GAME_WALLET_KEY               — private key (0x...) of the agent wallet
+//
+// Optional safety env (recommended for agent operators):
+//   BASELINGS_MODE=read           — disable all write tools (default: write)
+//   MAX_USDC_PER_TX=<usd>         — cap any single USDC-spending tool call (default: no cap)
+//   MAX_USDC_PER_DAY=<usd>        — cap cumulative USDC spend per UTC day (default: no cap)
+//   BASELINGS_LOG_FILE=<path>     — append-only JSONL audit log of every tx-emitting call
+//   BASELINGS_INFINITE_APPROVALS=1 — opt back into MAX_UINT256 approvals (NOT recommended)
+//
 // Usage: GAME_WALLET_KEY=0x... node mcp-server.js
 
+const fs = require('fs');
 const { createWallet, getContracts } = require('./contracts.js');
 const state = require('./state.js');
 const actions = require('./actions.js');
@@ -25,7 +37,82 @@ const ctx = {
   apiUrl: process.env.BASELING_API_URL || 'https://tasern.quest/api/baseling',
 };
 
-process.stderr.write(`[mcp] Baselings MCP server started — wallet ${wallet.address}\n`);
+// ── Agent-safety config ─────────────────────────────────────────────────────
+
+const MODE = (process.env.BASELINGS_MODE || 'write').toLowerCase();
+if (MODE !== 'read' && MODE !== 'write') {
+  process.stderr.write(`FATAL: BASELINGS_MODE must be 'read' or 'write' (got '${MODE}')\n`);
+  process.exit(1);
+}
+
+const MAX_USDC_PER_TX  = process.env.MAX_USDC_PER_TX  ? Number(process.env.MAX_USDC_PER_TX)  : Infinity;
+const MAX_USDC_PER_DAY = process.env.MAX_USDC_PER_DAY ? Number(process.env.MAX_USDC_PER_DAY) : Infinity;
+const LOG_FILE         = process.env.BASELINGS_LOG_FILE || null;
+
+// Tools that sign transactions. Used for read-mode filtering and spend guard.
+const WRITE_TOOLS = new Set([
+  'buy_egg', 'hatch_egg', 'buy_food', 'feed_baseling', 'claim_poop',
+  'assign_worker', 'unassign_worker', 'deposit_garden', 'buy_house',
+  'assign_to_house', 'freeze_baseling', 'unfreeze_baseling',
+  'resurrect_baseling', 'ensure_approvals',
+]);
+
+// In-memory daily spend tracker. Resets on process restart unless LOG_FILE is set
+// (in which case the log is the durable record; this counter is a soft cap only).
+let dailySpend = { date: new Date().toISOString().slice(0, 10), spent: 0 };
+
+function _resetDailyIfNeeded() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (dailySpend.date !== today) dailySpend = { date: today, spent: 0 };
+}
+
+// Pre-flight spend check. Throws on cap breach.
+function _checkSpend(toolName, args) {
+  if (MAX_USDC_PER_TX === Infinity && MAX_USDC_PER_DAY === Infinity) return;
+  _resetDailyIfNeeded();
+
+  // Best-effort USDC estimate per tool. Conservative — if a tool spends USDC but
+  // we can't estimate from args, we err on the side of NOT blocking (the
+  // contract will still enforce balance and any on-chain caps).
+  let usd = 0;
+  if (toolName === 'buy_food') usd = Number(args && args.amountUSDC) || 0;
+  else if (toolName === 'buy_egg') usd = ({ random: 2, sorted: 3, giant: 5 })[args && args.type] || 0;
+
+  if (usd <= 0) return; // not USDC-spending or unestimable
+
+  if (usd > MAX_USDC_PER_TX) {
+    throw new Error(`spend cap: tx amount ${usd} USDC exceeds MAX_USDC_PER_TX=${MAX_USDC_PER_TX} (tool=${toolName})`);
+  }
+  if (dailySpend.spent + usd > MAX_USDC_PER_DAY) {
+    throw new Error(`spend cap: today's spend ${dailySpend.spent + usd} USDC would exceed MAX_USDC_PER_DAY=${MAX_USDC_PER_DAY} (tool=${toolName})`);
+  }
+  dailySpend.spent += usd;
+}
+
+// Append-only JSONL audit log. Writes one line per tx-emitting tool call.
+function _logTx(toolName, args, result) {
+  if (!LOG_FILE) return;
+  if (!result || result.ok !== true || !result.tx) return; // not a tx-emitting success
+  try {
+    const entry = {
+      ts: new Date().toISOString(),
+      wallet: wallet.address,
+      tool: toolName,
+      args: args || {},
+      tx: result.tx,
+    };
+    if (result.tokenId) entry.tokenId = result.tokenId;
+    fs.appendFileSync(LOG_FILE, JSON.stringify(entry) + '\n');
+  } catch (e) {
+    process.stderr.write(`[mcp] failed to write audit log: ${e.message}\n`);
+  }
+}
+
+process.stderr.write(`[mcp] Baselings MCP server started — wallet ${wallet.address} mode=${MODE}`);
+if (MAX_USDC_PER_TX  !== Infinity) process.stderr.write(` max/tx=${MAX_USDC_PER_TX}`);
+if (MAX_USDC_PER_DAY !== Infinity) process.stderr.write(` max/day=${MAX_USDC_PER_DAY}`);
+if (LOG_FILE) process.stderr.write(` audit=${LOG_FILE}`);
+process.stderr.write('\n');
 
 // ── Tool definitions ────────────────────────────────────────────────────────
 
@@ -470,7 +557,12 @@ function handleInitialize(params) {
 }
 
 function handleToolsList() {
-  return { tools: TOOLS };
+  // In read mode, hide all tools that sign transactions so an agent
+  // can't even discover them.
+  const tools = MODE === 'read'
+    ? TOOLS.filter(t => !WRITE_TOOLS.has(t.name))
+    : TOOLS;
+  return { tools };
 }
 
 async function handleToolsCall(params) {
@@ -484,9 +576,31 @@ async function handleToolsCall(params) {
     };
   }
 
+  // Reject write tools in read mode (defense-in-depth — they're already hidden in list).
+  if (MODE === 'read' && WRITE_TOOLS.has(name)) {
+    return {
+      content: [{ type: 'text', text: JSON.stringify({ ok: false, error: `Tool '${name}' disabled — server running in BASELINGS_MODE=read` }) }],
+      isError: true,
+    };
+  }
+
+  // Enforce spending caps for USDC-spending write tools.
+  try {
+    _checkSpend(name, args);
+  } catch (e) {
+    process.stderr.write(`[mcp] spend cap blocked ${name}: ${e.message}\n`);
+    return {
+      content: [{ type: 'text', text: JSON.stringify({ ok: false, error: e.message }) }],
+      isError: true,
+    };
+  }
+
   process.stderr.write(`[mcp] calling tool: ${name} ${JSON.stringify(args || {})}\n`);
 
   const result = await executeTool(name, args || {});
+
+  // Append to audit log if BASELINGS_LOG_FILE is set.
+  _logTx(name, args, result);
 
   const text = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
 
