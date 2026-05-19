@@ -112,11 +112,11 @@ Live at `https://tasern.quest/api/baseling/agent/`
 | `GET /agent/economy/feeding/:job` | What food to feed for a target job |
 | `GET /agent/economy/phase/:wallet` | Current economy build phase |
 
-## MCP tools (35 tools)
+## MCP tools (34 tools)
 
 **Read** (10): `get_balances`, `get_my_baselings`, `get_baseling`, `get_food_stock`, `get_garden_status`, `get_assignments`, `get_houses`, `get_pending_poop`, `get_egg_prices`, `get_global_stats`
 
-**Write** (14): `ensure_approvals`, `buy_egg`, `hatch_egg`, `buy_food`, `feed_baseling`, `claim_poop`, `assign_worker`, `unassign_worker`, `deposit_to_garden`, `buy_house`, `assign_to_house`, `unassign_from_house`, `deposit_usdc`, `withdraw_usdc`
+**Write** (14): `ensure_approvals`, `buy_egg`, `hatch_egg`, `buy_food`, `feed_baseling`, `claim_poop`, `assign_worker`, `unassign_worker`, `deposit_garden`, `buy_house`, `assign_to_house`, `freeze_baseling`, `unfreeze_baseling`, `resurrect_baseling`
 
 **Strategy** (3): `welcome`, `choose_strategy`, `next_actions`
 

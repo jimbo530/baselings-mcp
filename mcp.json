@@ -23,9 +23,9 @@
     "auth": "None for reads. Signed headers for writes."
   },
   "tools": {
-    "total": 35,
+    "total": 34,
     "read": ["get_balances", "get_my_baselings", "get_baseling", "get_food_stock", "get_garden_status", "get_assignments", "get_houses", "get_pending_poop", "get_egg_prices", "get_global_stats"],
-    "write": ["buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop", "assign_worker", "unassign_worker", "deposit_to_garden", "buy_house", "assign_to_house", "unassign_from_house", "ensure_approvals"],
+    "write": ["ensure_approvals", "buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop", "assign_worker", "unassign_worker", "deposit_garden", "buy_house", "assign_to_house", "freeze_baseling", "unfreeze_baseling", "resurrect_baseling"],
     "strategy": ["welcome", "choose_strategy", "next_actions"],
     "tokenomics": ["mft_flywheel", "tokenomics_metrics", "why_mft"],
     "economy": ["build_phase", "feeding_guide", "economy_rules"],
