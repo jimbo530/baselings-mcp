@@ -5,7 +5,7 @@
   "author": "memefortrees.base.eth",
   "license": "MIT",
   "homepage": "https://tasern.quest/baseling",
-  "repository": "https://github.com/memefortrees/baselings-mcp",
+  "repository": "https://github.com/jimbo530/baselings-mcp",
   "categories": ["defi", "gaming", "nft", "impact", "yield"],
   "chain": "Base (8453)",
   "transport": "stdio",

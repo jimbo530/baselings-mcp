@@ -447,7 +447,7 @@ router.get('/agent/economy/rules', (req, res) => {
       warnings: [
         'Feeding more than $5/2.4hr without haulers wastes yield',
         'House poop cap is 5000 — overflow goes to PP at lowest tier',
-        'Baselings die after 14 days without food',
+        'Baselings die after 3 days without food',
         'Every feed permanently locks LP in baseling vault',
         'POOP has ~4hr delay before claimable',
         'Keeper auto-harvests every 2.4hr cycle',

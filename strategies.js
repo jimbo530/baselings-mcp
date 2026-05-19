@@ -39,7 +39,7 @@ const ECONOMY_CONSTRAINTS = {
   keeperCycle:     2.4,        // hours between keeper auto-harvest
   maxFeedPerCycle: 5.00,       // USD — feeding more than this without haulers wastes yield
   housePoopCap:    5000,       // POOP per house — overflow goes to PP at worst tier
-  careTimer:       14,         // days — baseling dies if not fed within this
+  careTimer:       3,          // days — baseling dies if not fed within this
   mealCost:        0.01,       // USD per meal (10000 raw USDC)
   eggCost:         0.10,       // USD per random egg
 };
