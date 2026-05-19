@@ -14,6 +14,11 @@
 //   await baselings.actions.buyEgg(ctx, 'random');
 //   await baselings.actions.feedBaseling(ctx, tokenId, 'burgers', amount);
 //
+//   // House vault (V2)
+//   const vault = await baselings.state.getHouseVault(ctx, houseId);
+//   await baselings.actions.depositPoopToHouse(ctx, houseId, amount);
+//   await baselings.actions.sendPoopFromHouse(ctx, houseId, destination, amount);
+//
 //   // Strategy playbooks
 //   const strats = baselings.strategies.listStrategies();
 //   const green = baselings.strategies.getStrategy('green');

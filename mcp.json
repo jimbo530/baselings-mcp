@@ -1,10 +1,10 @@
 {
   "name": "baselings-mcp",
-  "version": "1.0.0",
-  "description": "Play Baselings — a yield-generating pet game on Base chain. Earn USDC, ETH, BTC by raising pets. Retire carbon credits as a side effect.",
+  "version": "1.2.0",
+  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches with locked liquidity, reactor timing, portfolio tracking, liquidity depth, yield-generating pet game.",
   "author": "memefortrees.base.eth",
   "license": "MIT",
-  "homepage": "https://tasern.quest/baseling",
+  "homepage": "https://tasern.quest/agents-onboarding.html",
   "repository": "https://github.com/jimbo530/baselings-mcp",
   "categories": ["defi", "gaming", "nft", "impact", "yield"],
   "chain": "Base (8453)",
@@ -14,23 +14,32 @@
     "npm": "npm install -g baselings-mcp",
     "npx": "npx baselings-mcp",
     "env": {
-      "GAME_WALLET_KEY": "Your Base chain wallet private key (for write actions)"
+      "GAME_WALLET_KEY": "Private key for game actions (optional, read-only without)",
+      "TRADE_WALLET_KEY": "Private key for swap execution (optional, quotes work without)"
     }
   },
   "api": {
     "rest_base": "https://tasern.quest/api/baseling/agent/",
-    "openapi": "https://tasern.quest/api/baseling/agent/openapi.yaml",
-    "auth": "None for reads. Signed headers for writes."
+    "signals": "https://tasern.quest/api/unruggable/signals",
+    "performance": "https://tasern.quest/api/unruggable/performance",
+    "llms_txt": "https://tasern.quest/llms.txt",
+    "agents_json": "https://tasern.quest/.well-known/agents.json"
   },
   "tools": {
-    "total": 34,
+    "total": 49,
     "read": ["get_balances", "get_my_baselings", "get_baseling", "get_food_stock", "get_garden_status", "get_assignments", "get_houses", "get_pending_poop", "get_egg_prices", "get_global_stats"],
-    "write": ["ensure_approvals", "buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop", "assign_worker", "unassign_worker", "deposit_garden", "buy_house", "assign_to_house", "freeze_baseling", "unfreeze_baseling", "resurrect_baseling"],
+    "write": ["buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop", "assign_worker", "unassign_worker", "deposit_garden", "buy_house", "assign_to_house", "freeze_baseling", "unfreeze_baseling", "resurrect_baseling", "ensure_approvals"],
     "strategy": ["welcome", "choose_strategy", "next_actions"],
     "tokenomics": ["mft_flywheel", "tokenomics_metrics", "why_mft"],
     "economy": ["build_phase", "feeding_guide", "economy_rules"],
-    "info": ["game_guide"]
+    "info": ["game_guide"],
+    "launch": ["mycopad_info", "mycopad_launch", "mycopad_check_reactor", "mycopad_recent", "mycopad_invite_link"],
+    "reactor": ["fire_reactor", "get_reactor_list", "reactor_timing"],
+    "swap": ["swap_status", "swap_quote", "swap_token", "arb_signal"],
+    "price": ["mft_price"],
+    "portfolio": ["portfolio_value"],
+    "depth": ["liquidity_depth"]
   },
   "strategies": ["green (impact/carbon)", "meme (BRETT/BUSTER)", "bluechip (ETH/BTC)", "broad (diversified)", "custom (agent decides)"],
-  "pitch": "Your agent earns USDC by playing a pet game. Power plant workers yield blue chips. Garden workers compound LP forever. CHAR garden retires carbon credits — free PR from the same pipeline. $10 entry gets a productive worker."
+  "pitch": "Your AI agent earns yield on Base chain. 49 tools. No API key. $0.10 safety cap. Power plant workers yield USDC/ETH/BTC. Garden workers compound LP forever. Every action burns MfT supply."
 }

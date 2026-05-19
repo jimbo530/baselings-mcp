@@ -38,8 +38,8 @@ const ECONOMY_CONSTRAINTS = {
   poopDelay:       4,          // hours before minted POOP is claimable
   keeperCycle:     2.4,        // hours between keeper auto-harvest
   maxFeedPerCycle: 5.00,       // USD — feeding more than this without haulers wastes yield
-  housePoopCap:    5000,       // POOP per house — overflow goes to PP at worst tier
-  careTimer:       3,          // days — baseling dies if not fed within this
+  housePoopCap:    500,        // base POOP per house — decorations increase cap, overflow burns
+  careTimer:       14,         // days — baseling dies if not fed within this
   mealCost:        0.01,       // USD per meal (10000 raw USDC)
   eggCost:         0.10,       // USD per random egg
 };
@@ -111,15 +111,16 @@ const STRATEGIES = {
       'Run ensure_approvals to set up token permissions',
       'Buy 1-3 eggs (any family works — TGN or BURGERS family for thematic fit)',
       'Hatch eggs and feed with TGN or BURGERS food (both are impact assets)',
-      'Claim POOP after 4hr delay',
-      'Deposit POOP to CHAR GARDEN first (retires carbon credits)',
+      'Claim POOP after 4hr delay → deposit into house vault (deposit_poop_to_house)',
+      'From house vault, sendPoop to CHAR GARDEN first (retires carbon credits)',
       'Then TGN GARDEN (impact asset LP fees fund environmental work)',
       'Then BURGER TREE (LP fees donate to feed people)',
       'Overflow to AZOS, LETTUCE, RICE farms for food production',
+      'Place storage decorations in house to increase POOP vault cap beyond 500 base',
       'Assign baselings as garden workers on impact pools (WIS stat matters)',
       'Keeper cycles every 2.4hrs — your workers auto-earn',
       'MfT gets bought+burned on every harvest — trees get planted IRL',
-      'Repeat: feed → claim → deposit to impact pools → grow',
+      'POOP flow: baseling → wallet → house vault → sendPoop to gardens/PP',
       'Your yield: food LP + carbon credits + TGN + BURGERS + MfT burn credit',
       'Every token you earn here does real-world good. Impact receipts on-chain.',
     ],
@@ -147,14 +148,15 @@ const STRATEGIES = {
       'Run ensure_approvals to set up token permissions',
       'Buy eggs — sorted family 1 (BURGERS) for max meme vibes, or random for variety',
       'Hatch and feed with BURGERS food (cheapest, most liquid)',
-      'Claim POOP after 4hr delay',
-      'Spread POOP across meme pools: BRETT and BUSTER first for pure meme',
+      'Claim POOP after 4hr delay → deposit into house vault (deposit_poop_to_house)',
+      'From house vault, sendPoop across meme pools: BRETT and BUSTER first for pure meme',
       'BURGERS pool also earns yield AND feeds people — meme with a conscience',
+      'Place storage decorations to boost house vault cap beyond 500 base',
       'Assign workers to BRETT GARDEN and BUSTER GARDEN (WIS stat)',
       'Power Plant burns POOP+meme tokens — assign STR-heavy baselings there',
       'Keeper cycles every 2.4hrs — harvests all pools automatically',
+      'POOP flow: baseling → wallet → house vault → sendPoop to gardens/PP',
       'Your yield: meme tokens + food LP + POOP compound',
-      'Repeat: feed → claim → deposit across meme pools → ride the wave',
     ],
   },
 
@@ -176,11 +178,13 @@ const STRATEGIES = {
       'Run ensure_approvals to set up token permissions',
       'Buy eggs (any type — stats matter more than family for blue chip)',
       'Hatch and feed with WETH food (blue chip food = ETH-backed LP)',
-      'Claim POOP after 4hr delay',
-      'Deposit POOP to ETH PATCH first, then BTC PATCH',
+      'Claim POOP after 4hr delay → deposit into house vault (deposit_poop_to_house)',
+      'From house vault, sendPoop to ETH PATCH first, then BTC PATCH',
       'BERRY BUSH for overflow — grows berry food backed by WETH',
+      'Place storage decorations to boost house vault cap beyond 500 base',
       'Assign workers to ETH/BTC pools (WIS stat)',
       'Power Plant workers burn POOP for blue chip yield (STR stat)',
+      'POOP flow: baseling → wallet → house vault → sendPoop to gardens/PP',
       'Keeper harvests every 2.4hrs — yields accumulate in ETH + BTC',
       'Your yield: WETH + cbBTC + food LP. Real assets, no meme risk.',
     ],
@@ -208,10 +212,12 @@ const STRATEGIES = {
       'Run ensure_approvals to set up token permissions',
       'Buy 3+ eggs across different families for stat diversity',
       'Hatch all and rotate feeding: BURGERS → TGN → WETH',
-      'Claim POOP after 4hr delay',
-      'Split POOP deposits: 25% blue chip (WETH/BTC), 25% meme (BRETT/BUSTER), 50% impact (CHAR/TGN/BURGERS)',
+      'Claim POOP after 4hr delay → deposit into house vault (deposit_poop_to_house)',
+      'From house vault, sendPoop split: 25% blue chip (WETH/BTC), 25% meme (BRETT/BUSTER), 50% impact (CHAR/TGN/BURGERS)',
+      'Place storage decorations to boost house vault cap beyond 500 base',
       'Assign workers across multiple pools — spread the WIS',
       'Some workers in Power Plant for burn yield (STR-heavy ones)',
+      'POOP flow: baseling → wallet → house vault → sendPoop to gardens/PP',
       'Keeper cycles every 2.4hrs — all pools harvest automatically',
       'Rebalance monthly: check get_garden_status, shift POOP to highest-yield pools',
       'Your yield: mixed basket of ETH, BTC, meme tokens, food LP, carbon credits, meals donated',
@@ -235,12 +241,14 @@ const STRATEGIES = {
       'Call get_egg_prices to find best entry point',
       'Buy eggs based on your analysis',
       'Choose food family based on LP depth and your preferred pools',
-      'Claim POOP after 4hr delay',
-      'Allocate POOP deposits based on current yield data — highest BPS first',
+      'Claim POOP after 4hr delay → deposit into house vault (deposit_poop_to_house)',
+      'Check house vault cap (get_house_vault) — place storage decorations to increase cap',
+      'From house vault, sendPoop to pools based on current yield data — highest BPS first',
       'Under-worked pools may offer better per-worker yield (fewer workers = larger share)',
       'Power Plant pools burn POOP+X tokens — good for tokens you want to reduce supply of',
       'Farm pools produce food LP — good for self-sustaining feeding loop',
       'Garden pools earn the paired token directly — good for token accumulation',
+      'POOP flow: baseling → wallet → house vault → sendPoop to gardens/PP',
       'Rebalance every keeper cycle (2.4hrs) based on fresh yield data',
       'Track your performance: get_balances before and after each cycle',
     ],
@@ -280,8 +288,9 @@ function getBuildPhase(state) {
   // Count assigned jobs
   const jobs = { garden: 0, hauler: 0, pp: 0, nanny: 0 };
   for (const a of assignments) {
-    const jobName = ['garden', 'pp', 'nanny', 'hauler'][a.jobType] || 'unknown';
-    jobs[jobName] = (jobs[jobName] || 0) + 1;
+    if (a.job && jobs.hasOwnProperty(a.job)) {
+      jobs[a.job] += 1;
+    }
   }
 
   if (jobs.garden === 0) return { phase: 1, name: 'Need Gardener', next: BUILD_ORDER[0], jobs };
@@ -371,13 +380,13 @@ async function getNextActions(strategy, state) {
 
   // 5. Deposit POOP to priority pools (only if we have POOP)
   if (state.balances && state.balances.poop > 0) {
-    // Warn about overflow if no house infrastructure
+    // Route POOP through house vault before garden deposits
     const poopBal = parseFloat(state.balances.poop);
-    if (poopBal > ECONOMY_CONSTRAINTS.housePoopCap * 0.8) {
+    if (poopBal > 0) {
       actions.push({
-        priority: 2, action: 'deposit_garden',
-        params: { poolPair: strategy.deposits[0]?.pool || 'burgers' },
-        reason: `WARNING: ${poopBal.toFixed(0)} POOP approaching house cap (${ECONOMY_CONSTRAINTS.housePoopCap}). Deposit to garden or overflow burns at worst tier.`,
+        priority: 2, action: 'deposit_poop_to_house',
+        params: {},
+        reason: `Deposit ${poopBal.toFixed(0)} POOP into house vault first — POOP flows: wallet → house vault → sendPoop to gardens/PP`,
       });
     }
     for (const dep of strategy.deposits.slice(0, 3)) {
@@ -418,7 +427,8 @@ function doorGreeting() {
     welcome: 'Welcome to Baselings — Tamagotchi meets DeFi on Base chain.',
     how_it_works: [
       'Buy eggs → hatch → feed baselings → earn POOP tokens',
-      'Deposit POOP into garden pools for yield (food, memes, blue chips, carbon credits)',
+      'Deposit POOP into house vault → sendPoop to garden pools for yield (food, memes, blue chips, carbon credits)',
+      'House vault has a base cap of 500 POOP — place storage decorations to increase it',
       'Some tokens do real-world good: TGN funds environmental projects, BURGERS donates fees to feed people, CHAR retires carbon, MfT plants trees',
       'Assign baselings as workers — keeper harvests every 2.4 hours automatically',
       'Game mechanics are the rate limit — no API throttling, just economic physics',

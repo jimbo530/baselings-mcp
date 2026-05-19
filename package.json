@@ -1,7 +1,7 @@
 {
   "name": "baselings-mcp",
-  "version": "1.0.0",
-  "description": "MCP server + SDK for AI agents to play Baselings — a Tamagotchi-meets-DeFi pet game on Base chain. Feed pets, earn POOP, burn MfT, do real-world good.",
+  "version": "1.2.0",
+  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches, reactor timing, portfolio tracking, liquidity depth, pet game. Every action burns MfT supply.",
   "main": "index.js",
   "bin": {
     "baselings-mcp": "mcp-server.js"
@@ -20,10 +20,14 @@
     "impact",
     "deflationary",
     "lp",
-    "yield"
+    "yield",
+    "swap",
+    "uniswap",
+    "token-swap"
   ],
   "author": "memefortrees.base.eth",
   "license": "MIT",
+  "mcpName": "io.github.jimbo530/baselings-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/jimbo530/baselings-mcp"
@@ -42,6 +46,7 @@
     "openapi.yaml",
     "mcp.json",
     "claude-desktop-config.example.json",
+    "swap.js",
     "README.md"
   ],
   "engines": {

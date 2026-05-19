@@ -240,7 +240,38 @@ async function getHouses(ctx) {
   }
 }
 
-// ── 8. getPendingPoop — Pending POOP for multiple baselings ──
+// ── 8. getHouseVault — POOP vault + storage state per house ──
+async function getHouseVault(ctx, houseId) {
+  const { houseRead } = ctx.contracts;
+  try {
+    const [stored, cap, baseCap, items, bonus, overflowBurned] = await Promise.all([
+      houseRead.poopStored(houseId),
+      houseRead.poopCap(houseId),
+      houseRead.basePoopCap(),
+      houseRead.storageItemsInHouse(houseId),
+      houseRead.storageBonusTotal(houseId),
+      houseRead.totalPoopOverflowBurned(),
+    ]);
+    return {
+      houseId:            Number(houseId),
+      poopStored:         ethers.formatEther(stored),
+      poopCap:            ethers.formatEther(cap),
+      basePoopCap:        ethers.formatEther(baseCap),
+      storageItems:       items.map(Number),
+      storageBonusTotal:  ethers.formatEther(bonus),
+      totalOverflowBurned: ethers.formatEther(overflowBurned),
+      raw: {
+        poopStored: stored.toString(),
+        poopCap:    cap.toString(),
+      },
+    };
+  } catch (e) {
+    console.error('[state] getHouseVault:', e.message);
+    return null;
+  }
+}
+
+// ── 9. getPendingPoop — Pending POOP for multiple baselings ──
 async function getPendingPoop(ctx, tokenIds) {
   const { nftRead } = ctx.contracts;
   const addr = ctx.wallet.address;
@@ -357,6 +388,7 @@ module.exports = {
   getGardenStatus,
   getAssignments,
   getHouses,
+  getHouseVault,
   getPendingPoop,
   getGameSave,
   getEggPrices,

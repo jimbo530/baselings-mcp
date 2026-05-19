@@ -70,6 +70,12 @@ async function ensureApprovals(ctx) {
     );
     if (poopState) approved.push({ token: 'POOP', spender: 'BaselingState', tx: poopState });
 
+    // POOP → House NFT (vault deposits)
+    const poopHouse = await _ensureAllowance(
+      contracts.poop, addr, CONTRACTS.HOUSE_NFT, MAX_UINT256
+    );
+    if (poopHouse) approved.push({ token: 'POOP', spender: 'HouseNFT', tx: poopHouse });
+
     // NFT → setApprovalForAll for game wallet (Router needs to move NFTs)
     const nftApprovedRouter = await contracts.nftRead.isApprovedForAll(addr, CONTRACTS.ROUTER);
     if (!nftApprovedRouter) {
@@ -380,6 +386,83 @@ async function unassignFromHouse(ctx, houseTokenId, baselingId) {
   }
 }
 
+// ── HOUSE VAULT ────────────────────────────────────────────────────────────
+
+async function depositPoopToHouse(ctx, houseId, amount) {
+  try {
+    const { wallet, contracts } = ctx;
+    await _ensureAllowance(contracts.poop, wallet.address, CONTRACTS.HOUSE_NFT, BigInt(amount));
+    const tx = await contracts.house.depositPoop(houseId, amount);
+    const receipt = await waitForTx(tx);
+    return { ok: true, tx: receipt.hash };
+  } catch (e) {
+    console.error('[actions] depositPoopToHouse:', e.message);
+    return { ok: false, error: e.message };
+  }
+}
+
+async function sendPoopFromHouse(ctx, houseId, destination, amount) {
+  try {
+    const { contracts } = ctx;
+    const tx = await contracts.house.sendPoop(houseId, destination, amount);
+    const receipt = await waitForTx(tx);
+    return { ok: true, tx: receipt.hash };
+  } catch (e) {
+    console.error('[actions] sendPoopFromHouse:', e.message);
+    return { ok: false, error: e.message };
+  }
+}
+
+async function depositTokenToHouse(ctx, houseId, tokenAddress, amount) {
+  try {
+    const { wallet, contracts } = ctx;
+    const token = contracts.erc20Write(tokenAddress);
+    await _ensureAllowance(token, wallet.address, CONTRACTS.HOUSE_NFT, BigInt(amount));
+    const tx = await contracts.house.depositToken(houseId, tokenAddress, amount);
+    const receipt = await waitForTx(tx);
+    return { ok: true, tx: receipt.hash };
+  } catch (e) {
+    console.error('[actions] depositTokenToHouse:', e.message);
+    return { ok: false, error: e.message };
+  }
+}
+
+async function withdrawTokenFromHouse(ctx, houseId, tokenAddress, amount) {
+  try {
+    const { contracts } = ctx;
+    const tx = await contracts.house.withdrawToken(houseId, tokenAddress, amount);
+    const receipt = await waitForTx(tx);
+    return { ok: true, tx: receipt.hash };
+  } catch (e) {
+    console.error('[actions] withdrawTokenFromHouse:', e.message);
+    return { ok: false, error: e.message };
+  }
+}
+
+async function placeStorageItem(ctx, houseId, itemId) {
+  try {
+    const { contracts } = ctx;
+    const tx = await contracts.house.placeStorageItem(houseId, itemId);
+    const receipt = await waitForTx(tx);
+    return { ok: true, tx: receipt.hash };
+  } catch (e) {
+    console.error('[actions] placeStorageItem:', e.message);
+    return { ok: false, error: e.message };
+  }
+}
+
+async function removeStorageItem(ctx, houseId, itemId) {
+  try {
+    const { contracts } = ctx;
+    const tx = await contracts.house.removeStorageItem(houseId, itemId);
+    const receipt = await waitForTx(tx);
+    return { ok: true, tx: receipt.hash };
+  } catch (e) {
+    console.error('[actions] removeStorageItem:', e.message);
+    return { ok: false, error: e.message };
+  }
+}
+
 // ── CRYO / GRAVEYARD ────────────────────────────────────────────────────────
 
 async function freezeBaseling(ctx, tokenId) {
@@ -474,6 +557,13 @@ module.exports = {
   buyHouse,
   assignToHouse,
   unassignFromHouse,
+  // House Vault
+  depositPoopToHouse,
+  sendPoopFromHouse,
+  depositTokenToHouse,
+  withdrawTokenFromHouse,
+  placeStorageItem,
+  removeStorageItem,
   // Cryo / Graveyard
   freezeBaseling,
   unfreezeBaseling,

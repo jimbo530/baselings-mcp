@@ -1,0 +1,46 @@
+{
+  "name": "io.github.jimbo530/baselings-mcp",
+  "version": "1.2.0",
+  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches with locked liquidity, reactor timing, portfolio tracking, liquidity depth, yield-generating pet game.",
+  "author": "memefortrees.base.eth",
+  "license": "MIT",
+  "homepage": "https://tasern.quest/agents-onboarding.html",
+  "repository": "https://github.com/jimbo530/baselings-mcp",
+  "npm": "baselings-mcp",
+  "categories": ["defi", "gaming", "finance", "blockchain"],
+  "chain": "Base (8453)",
+  "transport": "stdio",
+  "protocol_version": "2024-11-05",
+  "tool_count": 49,
+  "tools": [
+    "swap_status", "swap_quote", "swap_token",
+    "fire_reactor",
+    "mycopad_info", "mycopad_launch", "mycopad_check_reactor", "mycopad_recent", "mycopad_invite_link",
+    "get_balances", "get_my_baselings", "get_baseling", "get_food_stock", "get_garden_status",
+    "get_assignments", "get_houses", "get_pending_poop", "get_egg_prices", "get_global_stats",
+    "buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop",
+    "assign_worker", "unassign_worker", "deposit_garden", "buy_house", "assign_to_house",
+    "freeze_baseling", "unfreeze_baseling", "resurrect_baseling", "ensure_approvals",
+    "welcome", "choose_strategy", "next_actions",
+    "mft_flywheel", "tokenomics_metrics", "why_mft",
+    "build_phase", "feeding_guide", "economy_rules", "game_guide", "arb_signal",
+    "get_reactor_list", "mft_price", "reactor_timing", "portfolio_value", "liquidity_depth"
+  ],
+  "keywords": ["defi", "swap", "uniswap", "base-chain", "token-launch", "reactor", "burn", "deflationary", "yield", "carbon-credits", "mcp"],
+  "links": {
+    "signals": "https://tasern.quest/api/unruggable/signals",
+    "performance": "https://tasern.quest/api/unruggable/performance",
+    "tokenomics": "https://tasern.quest/api/unruggable/tokenomics",
+    "onboarding": "https://tasern.quest/agents-onboarding.html",
+    "llms_txt": "https://tasern.quest/llms.txt",
+    "agents_json": "https://tasern.quest/.well-known/agents.json"
+  },
+  "install": {
+    "npm": "npm install -g baselings-mcp",
+    "npx": "npx baselings-mcp",
+    "env": {
+      "GAME_WALLET_KEY": "Private key for game actions (optional, read-only without)",
+      "TRADE_WALLET_KEY": "Private key for swap execution (optional, quotes work without)"
+    }
+  }
+}

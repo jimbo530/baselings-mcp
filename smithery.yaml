@@ -1,0 +1,124 @@
+name: baselings-mcp
+display_name: Unruggable Network — DeFi Swaps + Reactor Burns + Yield Game
+description: >
+  49 MCP tools (v1.2.0) for AI agents on Base chain. Token swaps with safety guardrails
+  ($0.10 max, 60s cooldown, allowlisted tokens), fire 35+ autonomous burn
+  reactors (permissionless execute() every 2hrs across 180+ pools), launch
+  tokens with permanently locked liquidity ($5 seed, 8 Uniswap V3 positions),
+  reactor timing predictions, portfolio tracking, liquidity depth scanning,
+  and play a yield-generating pet game. Every action burns MfT supply. No API
+  key required.
+
+icon: https://tasern.quest/icon-192.svg
+repository: https://github.com/jimbo530/baselings-mcp
+homepage: https://tasern.quest/agents-onboarding.html
+
+categories:
+  - defi
+  - gaming
+  - blockchain
+  - finance
+
+transport: stdio
+command: npx
+args:
+  - baselings-mcp
+
+environment:
+  GAME_WALLET_KEY:
+    description: Private key for game actions (optional — read-only without)
+    required: false
+    sensitive: true
+  TRADE_WALLET_KEY:
+    description: Private key for swap execution (optional — quotes work without)
+    required: false
+    sensitive: true
+
+tools:
+  # SWAP (v1.1.0+)
+  - swap_status: Check cooldown, daily spend, allowed tokens
+  - swap_quote: Get Uniswap V3 price quote (read-only)
+  - swap_token: Execute token swap ($0.10 max, 60s cooldown, guardrailed)
+  - arb_signal: Detect cross-pool price discrepancies
+
+  # REACTOR
+  - fire_reactor: Fire any reactor (permissionless, triggers burn cascade)
+
+  # TIMING + PORTFOLIO + DATA (v1.2.0)
+  - reactor_timing: Predict optimal fire windows, cooldowns, next-fire estimates
+  - portfolio_value: Track wallet holdings, LP positions, yield, total USD value
+  - get_reactor_list: All reactor addresses, states, cooldowns
+  - mft_price: Live MfT price in USD
+  - liquidity_depth: Pool depth scanning across network
+
+  # LAUNCH
+  - mycopad_info: Factory stats and launch count
+  - mycopad_launch: Launch token with locked liquidity ($5 seed)
+  - mycopad_check_reactor: Verify reactor address
+  - mycopad_recent: Recent launches
+  - mycopad_invite_link: Generate invite link
+
+  # READ (10 tools)
+  - get_balances: Wallet balances (ETH, USDC, POOP, WETH)
+  - get_my_baselings: List all pets with stats
+  - get_baseling: Detailed on-chain baseling info
+  - get_food_stock: Food in cupboard + spoil timers
+  - get_garden_status: Garden pools + yields
+  - get_assignments: Worker assignments
+  - get_houses: Houses and residents
+  - get_pending_poop: Claimable POOP
+  - get_egg_prices: Current egg prices
+  - get_global_stats: Game-wide statistics
+
+  # WRITE (14 tools)
+  - buy_egg: Buy new egg ($2-$5 USDC)
+  - hatch_egg: Hatch egg into baseling
+  - buy_food: Buy food (USDC to LP)
+  - feed_baseling: Feed for POOP production
+  - claim_poop: Claim POOP rewards
+  - assign_worker: Assign to garden/PP
+  - unassign_worker: Remove from job
+  - deposit_garden: Stake POOP for yield
+  - buy_house: Buy house NFT
+  - assign_to_house: Move baseling to house
+  - freeze_baseling: Cryo storage
+  - unfreeze_baseling: Wake from cryo
+  - resurrect_baseling: Revive dead baseling
+  - ensure_approvals: Set up token approvals
+
+  # STRATEGY + ECONOMY + INFO (12 tools)
+  - welcome: Game overview
+  - choose_strategy: Pick play style
+  - next_actions: AI-recommended actions
+  - mft_flywheel: MfT burn mechanics
+  - tokenomics_metrics: Live metrics
+  - why_mft: Investment thesis
+  - build_phase: Economy build phase
+  - feeding_guide: Optimal feeding
+  - economy_rules: Full constraints
+  - game_guide: How to play
+
+chain: Base (8453)
+token: MfT (0x8FB87d13B40B1A67B22ED1a17e2835fe7e3a9bA3)
+
+links:
+  signals: https://tasern.quest/api/unruggable/signals
+  performance: https://tasern.quest/api/unruggable/performance
+  tokenomics: https://tasern.quest/api/unruggable/tokenomics
+  onboarding: https://tasern.quest/agents-onboarding.html
+  llms_txt: https://tasern.quest/llms.txt
+  npm: https://www.npmjs.com/package/baselings-mcp
+
+keywords:
+  - defi
+  - swap
+  - uniswap
+  - base chain
+  - token launch
+  - reactor
+  - burn
+  - deflationary
+  - pet game
+  - yield
+  - carbon credits
+  - mcp

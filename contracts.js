@@ -168,6 +168,25 @@ const ABI = {
     'function ownerOf(uint256) view returns (address)',
     'function totalSupply() view returns (uint256)',
     'function housePrice(uint8) view returns (uint256)',
+    // V2 — POOP vault
+    'function depositPoop(uint256,uint256)',
+    'function sendPoop(uint256,address,uint256)',
+    'function sendPoopAuthorized(uint256,address,uint256)',
+    'function poopCap(uint256) view returns (uint256)',
+    'function poopStored(uint256) view returns (uint256)',
+    'function basePoopCap() view returns (uint256)',
+    'function approvedPoopDestination(address) view returns (bool)',
+    'function totalPoopOverflowBurned() view returns (uint256)',
+    // V2 — token storage
+    'function depositToken(uint256,address,uint256)',
+    'function withdrawToken(uint256,address,uint256)',
+    'function tokenStored(uint256,address) view returns (uint256)',
+    // V2 — storage decorations
+    'function storageItemsInHouse(uint256) view returns (uint256[])',
+    'function storageBonusTotal(uint256) view returns (uint256)',
+    'function placeStorageItem(uint256,uint256)',
+    'function removeStorageItem(uint256,uint256)',
+    'function setStorageBonus(uint256,uint256)',
   ],
   TRAIT_REGISTRY: [
     'function getIdentity(uint256) view returns (uint8,uint16,uint8,uint8,bool,uint16,uint8)',
@@ -223,9 +242,9 @@ async function deriveGameWallet(mainWalletSigner) {
 }
 
 function getContracts(signer) {
-  const provider = signer.provider || createProvider();
+  const provider = (signer && signer.provider) || createProvider();
   const read = (addr, abi) => new ethers.Contract(addr, abi, provider);
-  const write = (addr, abi) => new ethers.Contract(addr, abi, signer);
+  const write = (addr, abi) => signer ? new ethers.Contract(addr, abi, signer) : read(addr, abi);
 
   return {
     // Read-only (no gas)

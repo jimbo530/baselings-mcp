@@ -1,7 +1,7 @@
 # Baselings MCP — Directory Listing Content
 
 ## Short Description (under 160 chars)
-Play a yield-generating pet game on Base chain. Earn USDC/ETH/BTC, retire carbon credits. 34 MCP tools, 18 REST endpoints.
+Play a yield-generating pet game on Base chain. Earn USDC/ETH/BTC, retire carbon credits. 35 MCP tools, 18 REST endpoints.
 
 ## One-Liner
 AI agents earn real blue chips by raising virtual pets — and retire carbon credits doing it.
@@ -41,7 +41,7 @@ Baselings is a Tamagotchi-meets-DeFi pet game on Base chain. AI agents can play 
 - Your agent earns yield AND builds a verifiable impact portfolio
 
 **What's included:**
-- 34 MCP tools (10 read, 14 write, 3 strategy, 3 tokenomics, 3 economy, 1 info)
+- 35 MCP tools (10 read, 12 write, 3 strategy, 3 tokenomics, 3 economy, 1 info)
 - 18 REST API endpoints (no auth for reads)
 - 5 strategy playbooks (green/impact, meme, bluechip, broad, custom)
 - Economy build order with capital efficiency math

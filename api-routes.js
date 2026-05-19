@@ -10,8 +10,8 @@ const {
 } = require('./contracts.js');
 const {
   getMyBaselings, getBaseling, getBalances, getFoodStock,
-  getGardenStatus, getAssignments, getHouses, getPendingPoop,
-  getEggPrices, getGlobalStats,
+  getGardenStatus, getAssignments, getHouses, getHouseVault,
+  getPendingPoop, getEggPrices, getGlobalStats,
 } = require('./state.js');
 
 const router = Router();
@@ -231,6 +231,28 @@ router.get('/agent/houses/:wallet', async (req, res) => {
   }
 });
 
+// GET /agent/house/:id/vault — House vault state (POOP stored, cap, decorations)
+router.get('/agent/house/:id/vault', async (req, res) => {
+  const { id } = req.params;
+  if (!isValidTokenId(id)) {
+    return res.status(400).json({ error: 'Invalid house ID — must be a positive integer' });
+  }
+
+  try {
+    const ctx = makeReadCtx(ethers.ZeroAddress);
+    const vault = await getHouseVault(ctx, Number(id));
+
+    if (!vault) {
+      return res.status(404).json({ error: `House #${id} not found or vault read failed` });
+    }
+
+    return res.json(vault);
+  } catch (e) {
+    console.error('[agent-sdk] GET /agent/house/:id/vault:', e.message);
+    return res.status(500).json({ error: 'Failed to fetch house vault: ' + e.message });
+  }
+});
+
 // GET /agent/poop/:wallet — Pending POOP for all owned baselings
 router.get('/agent/poop/:wallet', async (req, res) => {
   const { wallet } = req.params;
@@ -314,7 +336,7 @@ router.get('/agent/guide', async (req, res) => {
       vaults: 'LP deposited into baseling vaults is locked in the NFT contract forever. No admin key can withdraw it. The vault earns swap fees for the NFT holder permanently.',
       game_wallet: 'The game wallet (GAME_WALLET_KEY) is a hot relay for transactions. Keep minimal balance. Move yields to your main wallet regularly.',
       nft_ownership: 'Baseling NFTs should be held in your main wallet, not the game wallet. The NFT IS the vault — whoever holds it owns the stacked LP yield.',
-      poop_flow: 'POOP is tradeable on market, but every mint flows through the game and into LPs before reaching markets. No free tokens for anyone, ever. Every POOP in circulation was earned by gameplay and routed through LP deposits first.',
+      poop_flow: 'POOP flows: baseling → wallet → house vault → sendPoop to gardens/PP. House vault has a base cap of 500 POOP (expandable with storage decorations). Overflow is burned. Every POOP in circulation was earned by gameplay.',
       honest_risk: 'The game server and keeper are centralized infrastructure. A breach could lose in-game POOP or pending claims. It CANNOT touch your vault LP (on-chain, immutable), your NFTs (in your wallet), or your blue chip yields (sent to main wallet). Keep exposure in the game wallet low.',
       recommendation: 'Use a dedicated game wallet with small USDC balance. Transfer NFTs and yield to your main wallet. The game is a thin pipe — your vaults and wallet are the safe.',
     },
@@ -362,9 +384,11 @@ router.get('/agent/guide', async (req, res) => {
       gardens:     'GET /agent/gardens',
       assignments: 'GET /agent/assignments/:wallet',
       houses:      'GET /agent/houses/:wallet',
+      houseVault:  'GET /agent/house/:id/vault',
       poop:        'GET /agent/poop/:wallet',
       prices:      'GET /agent/prices',
       stats:       'GET /agent/stats',
+      poopToken:   'GET /agent/poop-token (no wallet needed — live POOP supply, burns, pools)',
       guide:       'GET /agent/guide',
       openapi:     'GET /agent/openapi.yaml',
       economyRules:   'GET /agent/economy/rules',
@@ -398,6 +422,87 @@ router.get('/agent/openapi.yaml', (req, res) => {
     res.type('text/yaml').send(spec);
   } catch (e) {
     res.status(404).json({ error: 'OpenAPI spec not found' });
+  }
+});
+
+// ── POOP token stats (no wallet needed) ──
+router.get('/agent/poop-token', async (req, res) => {
+  try {
+    const poopAbi = [
+      'function totalMinted() view returns (uint256)',
+      'function totalBurned() view returns (uint256)',
+      'function totalSupply() view returns (uint256)',
+      'function balanceOf(address) view returns (uint256)',
+      'function owner() view returns (address)',
+    ];
+    const factoryAbi = ['function getPool(address,address,uint24) view returns (address)'];
+    const poop = new ethers.Contract(TOKENS.POOP, poopAbi, _provider);
+    const factory = new ethers.Contract('0x33128a8fC17869897dcE68Ed026d694621f6FDfD', factoryAbi, _provider);
+    const DEAD = '0x000000000000000000000000000000000000dEaD';
+
+    const [totalMinted, totalBurned, totalSupply, deadBal, owner] = await Promise.all([
+      poop.totalMinted(), poop.totalBurned(), poop.totalSupply(), poop.balanceOf(DEAD), poop.owner(),
+    ]);
+
+    const circulating = totalSupply - deadBal;
+    const totalRemoved = totalBurned + deadBal;
+
+    // Resolve all pool addresses
+    const poolTokens = [
+      {sym:'WETH',addr:TOKENS.WETH},{sym:'USDC',addr:TOKENS.USDC},{sym:'cbBTC',addr:TOKENS.CBBTC},
+      {sym:'BURGERS',addr:TOKENS.BURGERS},{sym:'TGN',addr:TOKENS.TGN},{sym:'BRETT',addr:TOKENS.BRETT},
+      {sym:'AZUSD',addr:TOKENS.AZUSD},{sym:'EGP',addr:TOKENS.EGP},{sym:'BUSTER',addr:TOKENS.BUSTER},
+      {sym:'CHAR',addr:TOKENS.CHAR},{sym:'FUN',addr:TOKENS.FUN},
+    ];
+    const poolResults = await Promise.all(poolTokens.map(async t => {
+      try {
+        const addr = await factory.getPool(TOKENS.POOP, t.addr, 10000);
+        if (addr === '0x0000000000000000000000000000000000000000') return null;
+        return {pair: 'POOP/'+t.sym, pool: addr, fee: '1%', token: t.addr};
+      } catch { return null; }
+    }));
+    const pools = poolResults.filter(Boolean);
+
+    res.json({
+      token: 'POOP',
+      address: TOKENS.POOP,
+      chain: 'Base (8453)',
+      decimals: 18,
+      owner,
+      supply: {
+        totalMinted: ethers.formatUnits(totalMinted, 18),
+        totalBurned: ethers.formatUnits(totalBurned, 18),
+        totalSupply: ethers.formatUnits(totalSupply, 18),
+        deadAddress: ethers.formatUnits(deadBal, 18),
+        circulating: ethers.formatUnits(circulating, 18),
+        totalRemoved: ethers.formatUnits(totalRemoved, 18),
+        note: 'totalMinted/totalBurned include ~290 phantom accounting entries. totalSupply is the accurate real token count.',
+      },
+      burnMechanics: {
+        feeTier: '1% (10000 bps)',
+        keeperCycle: '2.4 hours',
+        pools: pools.length,
+        burnSources: [
+          'V3 pool fees (1% on every swap, collected every 2.4hrs)',
+          'Power plant (burns POOP + paired token, pays blue chips)',
+          'Garden pipeline (POOP sold for MfT to create food LP)',
+          'Dead/frozen baselings (POOP output becomes pure burn)',
+          'External volatility (ETH/BTC moves generate fees in POOP pairs)',
+        ],
+        mintSource: 'BaselingNFT contract only (game pets produce POOP from locked LP value)',
+        mintRateScaling: 'Fixed by gameplay. Does not scale with demand.',
+        burnRateScaling: 'Scales with trading volume across all pools.',
+      },
+      pools,
+      links: {
+        dataPage: 'https://tasern.quest/poop/',
+        contract: 'https://basescan.org/address/' + TOKENS.POOP,
+        agentSDK: 'https://tasern.quest/api/baseling/agent/guide',
+      },
+    });
+  } catch (e) {
+    console.error('[agent-sdk] GET /agent/poop-token:', e.message);
+    res.status(500).json({ error: 'Failed to fetch POOP stats: ' + e.message });
   }
 });
 
@@ -446,8 +551,8 @@ router.get('/agent/economy/rules', (req, res) => {
       jobRequirements: strats.JOB_REQUIREMENTS,
       warnings: [
         'Feeding more than $5/2.4hr without haulers wastes yield',
-        'House poop cap is 5000 — overflow goes to PP at lowest tier',
-        'Baselings die after 3 days without food',
+        'House poop base cap is 500 — place storage decorations to increase, overflow burns',
+        'Baselings die after 14 days without food',
         'Every feed permanently locks LP in baseling vault',
         'POOP has ~4hr delay before claimable',
         'Keeper auto-harvests every 2.4hr cycle',
