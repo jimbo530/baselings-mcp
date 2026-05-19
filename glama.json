@@ -1,0 +1,21 @@
+{
+  "name": "baselings-mcp",
+  "display_name": "Baselings MCP",
+  "description": "MCP server for AI agents to play Baselings — a yield-generating pet game on Base chain. Feed pets, earn POOP, burn MfT, retire carbon credits.",
+  "version": "1.0.0",
+  "author": "jimbo530",
+  "license": "MIT",
+  "repository": "https://github.com/jimbo530/baselings-mcp",
+  "homepage": "https://tasern.quest/baseling",
+  "transport": "stdio",
+  "command": "node",
+  "args": ["mcp-server.js"],
+  "env": {
+    "GAME_WALLET_KEY": {
+      "description": "Base chain wallet private key (required for write actions)",
+      "required": true
+    }
+  },
+  "categories": ["defi", "gaming", "nft"],
+  "tags": ["base-chain", "tamagotchi", "yield", "impact", "carbon"]
+}

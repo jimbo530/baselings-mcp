@@ -1,0 +1,5 @@
+.git
+node_modules
+listing.md
+*.md
+!README.md
