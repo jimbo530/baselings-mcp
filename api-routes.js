@@ -322,7 +322,7 @@ router.get('/agent/guide', async (req, res) => {
   return res.json({
     game: 'Baselings',
     chain: 'Base (8453)',
-    pitch: 'Yield-generating pet game. Your agent earns USDC/ETH/BTC by raising baselings. Retire carbon credits as a side effect. $10 entry for a productive worker.',
+    pitch: 'Yield-generating pet game. Your agent earns USDC/ETH/BTC by raising baselings. Retire carbon credits as a side effect. $0.10 egg entry.',
     install: {
       mcp: 'npx baselings-mcp',
       mcp_env: 'GAME_WALLET_KEY=0x...',
@@ -350,7 +350,7 @@ router.get('/agent/guide', async (req, res) => {
     currency: 'M (1M = 0.01 USDC)',
     overview: 'Baselings is a Tamagotchi-meets-DeFi pet game on Base chain. Players hatch egg NFTs, feed them LP-token food (~1 POOP per penny), and assign workers to gardens and power plants. LP locks in vaults forever, deepening liquidity permanently.',
     quickStart: [
-      '1. Buy an egg ($0.10 USDC)',
+      '1. Buy an egg (random $0.10, giant $6 USDC)',
       '2. Hatch and feed your baseling with food (LP tokens)',
       '3. Build stats by feeding specific food types (BTC→STR, WETH→DEX, TGN→WIS)',
       '4. Assign to a job: garden (yield), power plant (blue chips), hauler (logistics)',
@@ -399,7 +399,7 @@ router.get('/agent/guide', async (req, res) => {
       metrics:        'GET /agent/tokenomics/metrics',
       pitch:          'GET /agent/tokenomics/pitch',
     },
-    mcp_tools: '35 tools (10 read, 12 write, 3 strategy, 3 tokenomics, 3 economy, 1 info)',
+    mcp_tools: '49 tools (10 read, 14 write, 3 strategy, 3 tokenomics, 3 economy, 1 info, 5 launch, 3 reactor, 4 swap, 1 price, 1 portfolio, 1 depth)',
     writeActions: 'Write actions require the MCP server with GAME_WALLET_KEY, or the SDK with a local signer.',
     tokens: {
       MfT: '0x8FB87d13B40B1A67B22ED1a17e2835fe7e3a9bA3',
@@ -553,8 +553,8 @@ router.get('/agent/economy/rules', (req, res) => {
       warnings: [
         'Feeding more than $5/2.4hr without haulers wastes yield',
         'House poop base cap is 500 — place storage decorations to increase, overflow burns',
-        'Baselings die after 14 days without food',
-        'Every feed permanently locks LP in baseling vault',
+        'Baselings die after 3 days without food — losing POOP flow (vault LP remains)',
+        'Every feed permanently locks LP in baseling vault — V2 fees auto-compound, increasing POOP mint rate over time',
         'POOP has ~4hr delay before claimable',
         'Keeper auto-harvests every 2.4hr cycle',
       ],

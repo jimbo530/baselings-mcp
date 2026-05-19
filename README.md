@@ -104,7 +104,7 @@ swap_token   → Execute swap ($0.10 max, 60s cooldown)
 - Max per swap: $0.10
 - Min cooldown: 60 seconds
 - Max daily: $5.00 per wallet
-- Allowlisted tokens only: MfT, USDC, WETH, cbBTC, AZUSD, CHAR, EARTH, POOP
+- Allowlisted tokens only (17 tokens including MfT, USDC, WETH, cbBTC, POOP, CHAR, EARTH, and more)
 - Exact approvals (never unlimited)
 - Separate TRADE_WALLET_KEY (game wallet cannot swap)
 

@@ -105,7 +105,7 @@ function getMftFlywheel() {
     },
 
     math: {
-      per_feed: '1 feed = ~X POOP minted (after 4hr delay). That POOP eventually gets sold for MfT in gardens.',
+      per_feed: '~1 POOP minted per penny spent on food (after 4hr delay). That POOP eventually gets sold for MfT in gardens.',
       per_garden_cycle: 'Every 2.4hrs: garden harvests -> sells POOP -> buys MfT -> creates food LP. 50% to player, 50% reinvested.',
       per_nft_purchase: '1% of every egg/flower/house purchase auto-buys MfT and burns to dead address.',
       burn_rate: 'Call get_global_stats to see totalPoopBurned and compare to totalPoopMinted for current burn ratio.',
