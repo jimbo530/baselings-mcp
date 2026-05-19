@@ -267,8 +267,8 @@ HOW IT WORKS:
 - Buy food ($0.01/meal in USDC) -> feed baseling -> LP locks in vault forever
 - Earn ~1 POOP per penny spent on food
 - Deposit POOP to gardens (earn food tokens, LP) or power plant (burn for yield)
-- Garden workers turn POOP into LP positions that earn swap fees forever
-- Every LP deposit stacks permanently -- your baseling becomes a yield-generating NFT
+- Garden workers turn POOP into LP positions -- deepening liquidity permanently
+- Every LP deposit stacks in the baseling vault forever (fees accrue but are not withdrawable)
 - Assign baselings to jobs -- keeper auto-harvests every 2.4 hours
 
 IMPACT BONUS (not charity -- same pipeline, free PR):

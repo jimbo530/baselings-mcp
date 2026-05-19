@@ -606,9 +606,9 @@ async function executeTool(name, args) {
           jobRequirements: strategies.JOB_REQUIREMENTS,
           warnings: [
             'Feeding more than $5/2.4hr without haulers wastes yield (food sits unharvested)',
-            'House poop cap is 5000 — overflow goes to Power Plant at lowest paying tier',
-            'Baselings die after 14 days without food — losing POOP flow (vault LP remains)',
-            'Every feed permanently locks LP in baseling vault — swap fees accrue forever',
+            'House poop base cap is 500 — place storage decorations to increase, overflow burns',
+            'Baselings die after 3 days without food — losing POOP flow (vault LP remains)',
+            'Every feed permanently locks LP in baseling vault — fees accrue but are not withdrawable',
             'POOP has a ~4hr block delay before it becomes claimable',
             'Keeper auto-claims and auto-harvests every 2.4hr cycle — no manual action needed for yield',
           ],

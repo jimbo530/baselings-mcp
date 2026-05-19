@@ -333,7 +333,7 @@ router.get('/agent/guide', async (req, res) => {
     },
     security: {
       architecture: 'Thin pipe over forever vaults. The game wallet is a relay — assets belong in YOUR wallet, not ours.',
-      vaults: 'LP deposited into baseling vaults is locked in the NFT contract forever. No admin key can withdraw it. The vault earns swap fees for the NFT holder permanently.',
+      vaults: 'LP deposited into baseling vaults is locked in the NFT contract forever. No admin key can withdraw it. LP fees accrue to the vault but are not withdrawable — they deepen liquidity permanently.',
       game_wallet: 'The game wallet (GAME_WALLET_KEY) is a hot relay for transactions. Keep minimal balance. Move yields to your main wallet regularly.',
       nft_ownership: 'Baseling NFTs should be held in your main wallet, not the game wallet. The NFT IS the vault — whoever holds it owns the stacked LP yield.',
       poop_flow: 'POOP flows: baseling → wallet → house vault → sendPoop to gardens/PP. House vault has a base cap of 500 POOP (expandable with storage decorations). Overflow is burned. Every POOP in circulation was earned by gameplay.',
@@ -348,7 +348,7 @@ router.get('/agent/guide', async (req, res) => {
     },
     strategies: ['green (impact/carbon)', 'meme (BRETT/BUSTER)', 'bluechip (ETH/BTC)', 'broad (diversified)', 'custom (agent decides)'],
     currency: 'M (1M = 0.01 USDC)',
-    overview: 'Baselings is a Tamagotchi-meets-DeFi pet game on Base chain. Players hatch egg NFTs, feed them LP-token food, earn POOP tokens, and assign workers to gardens and power plants. Every deposit stacks permanently — baselings become yield-generating NFTs.',
+    overview: 'Baselings is a Tamagotchi-meets-DeFi pet game on Base chain. Players hatch egg NFTs, feed them LP-token food (~1 POOP per penny), and assign workers to gardens and power plants. LP locks in vaults forever, deepening liquidity permanently.',
     quickStart: [
       '1. Buy an egg ($0.10 USDC)',
       '2. Hatch and feed your baseling with food (LP tokens)',
