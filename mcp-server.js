@@ -115,12 +115,11 @@ const TOOLS = [
   // ── WRITE TOOLS ──
   {
     name: 'buy_egg',
-    description: 'Buy a new egg (costs USDC). Type: random ($0.10), sorted (pick family), giant ($6)',
+    description: 'Buy a new egg (costs USDC). Type: random ($0.10), giant ($6)',
     inputSchema: {
       type: 'object',
       properties: {
-        type: { type: 'string', enum: ['random', 'sorted', 'giant'], description: 'Egg type' },
-        family: { type: 'number', enum: [0, 1, 2], description: 'Family index for sorted eggs: 0=TGN, 1=BURGERS, 2=AZUSD' },
+        type: { type: 'string', enum: ['random', 'giant'], description: 'Egg type' },
       },
       required: ['type'],
     },
@@ -468,7 +467,7 @@ const TOOLS = [
 const GAME_GUIDE_TEXT = `Baselings — Quick Start Guide
 
 1. ensure_approvals first (sets up token permissions, one-time)
-2. buy_egg (random=$0.10, sorted=pick family, giant=$6 in USDC)
+2. buy_egg (random=$0.10, giant=$6 in USDC)
 3. hatch_egg when ready
 4. buy_food (burgers or tgn are cheapest)
 5. feed_baseling regularly — earns POOP with 4hr claim delay
