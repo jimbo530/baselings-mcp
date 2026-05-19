@@ -12,15 +12,16 @@ MCP server for AI agents — guardrailed DeFi swaps, token launches with permane
 
 - **Power plant workers** burn POOP + meme tokens → yield **USDC, ETH, or BTC** (your choice)
 - **Garden workers** turn POOP into LP positions earning swap fees **forever**
-- At skill level 10 (**$10 investment**), workers keep **40% of throughput** as blue chips
 - Every LP deposit stacks permanently — baselings become **yield-generating NFTs**
+- ~1 POOP earned per penny spent on food — POOP flows through gardens and power plant
 
-**Capital efficiency:**
-| Entry | What you get |
-|-------|-------------|
-| $10 | 1 egg + PP worker → 3,000 POOP/day, 40% as USDC |
-| $25 | PP + garden worker → yield + compounding LP |
-| $70 | Full 5-baseling squad → self-sustaining pipeline |
+**How it works:**
+| Step | What happens |
+|------|-------------|
+| Buy food | Spend USDC on food (LP tokens) — $0.01 per meal |
+| Feed pet | LP locks in baseling vault forever, earns ~1 POOP per penny |
+| Use POOP | Deposit to gardens (earn food/tokens) or power plant (burn for yield) |
+| Workers | Assign baselings to jobs — keeper auto-harvests every 2.4 hours |
 
 **Impact bonus** (free PR, same pipeline): CHAR retires carbon credits. TGN funds environmental projects. BURGERS feeds people IRL.
 

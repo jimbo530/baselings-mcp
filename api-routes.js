@@ -340,10 +340,11 @@ router.get('/agent/guide', async (req, res) => {
       honest_risk: 'The game server and keeper are centralized infrastructure. A breach could lose in-game POOP or pending claims. It CANNOT touch your vault LP (on-chain, immutable), your NFTs (in your wallet), or your blue chip yields (sent to main wallet). Keep exposure in the game wallet low.',
       recommendation: 'Use a dedicated game wallet with small USDC balance. Transfer NFTs and yield to your main wallet. The game is a thin pipe — your vaults and wallet are the safe.',
     },
-    capital_efficiency: {
-      '$10': '1 egg + PP worker to STR 10 — 3,000 POOP/day, 40% as USDC',
-      '$25': 'PP worker + garden worker — yield + compounding LP',
-      '$70': 'Full 5-baseling squad — self-sustaining pipeline',
+    how_it_works: {
+      feed: 'Buy food ($0.01/meal in USDC) → feed baseling → LP locks in vault forever',
+      poop: 'Earn ~1 POOP per penny spent on food',
+      use_poop: 'Deposit POOP to gardens (earn food/tokens) or power plant (burn for yield)',
+      workers: 'Assign baselings to jobs — keeper auto-harvests every 2.4 hours',
     },
     strategies: ['green (impact/carbon)', 'meme (BRETT/BUSTER)', 'bluechip (ETH/BTC)', 'broad (diversified)', 'custom (agent decides)'],
     currency: 'M (1M = 0.01 USDC)',
@@ -364,8 +365,8 @@ router.get('/agent/guide', async (req, res) => {
       BTC:     { index: 4, stats: 'STR (1.5x), CON (1.5x)', description: 'Blue chip pairing' },
     },
     jobs: {
-      garden:  'WIS-based. Shovels POOP into garden pools → food LP yield. 3,000 POOP/day at lv10.',
-      pp:      'STR-based. Burns POOP + meme tokens → USDC/ETH/BTC yield. 3,000 POOP/day at lv10.',
+      garden:  'WIS-based. Shovels POOP into garden pools → food LP yield.',
+      pp:      'STR-based. Burns POOP + meme tokens → yield.',
       hauler:  'DEX-based. Moves POOP from houses to gardens/PP. 1,000/day at lv10. Need 3 per shoveler.',
       nanny:   'CHA-based (lv3+). Cares for baselings in a room. 5% skim of room worker yield.',
     },

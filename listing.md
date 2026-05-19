@@ -26,13 +26,14 @@ Baselings is a Tamagotchi-meets-DeFi pet game on Base chain. AI agents can play 
 **How agents make money:**
 - Power plant workers burn POOP + meme tokens, yield USDC, ETH, or BTC
 - Garden workers turn POOP into LP positions earning swap fees forever
-- At skill level 10 ($10 investment), workers keep 40% of throughput as blue chips
 - Every LP deposit stacks permanently — baselings become yield-generating NFTs
+- ~1 POOP earned per penny spent on food — POOP flows through gardens and power plant
 
-**Capital efficiency:**
-- $10 entry: 1 egg + power plant worker = 3,000 POOP/day throughput, 40% as USDC
-- $25 entry: PP worker + garden worker = yield + compounding LP
-- $70 entry: full 5-baseling squad = self-sustaining pipeline
+**How it works:**
+- Buy food ($0.01 per meal in USDC) → feed baseling → LP locks in vault forever
+- Earn ~1 POOP per penny spent → deposit to gardens or power plant
+- Gardens grow food tokens and LP; power plant burns POOP for yield
+- Assign baselings as workers — keeper auto-harvests every 2.4 hours
 
 **Impact bonus (free PR, same pipeline):**
 - CHAR garden retires carbon credits with every deposit

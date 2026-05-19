@@ -263,18 +263,13 @@ function getAgentPitch() {
   return `Baselings is a yield-generating pet game on Base chain. You earn real blue chips (USDC, ETH, BTC)
 by raising baselings that work in gardens and a power plant.
 
-HOW YOU MAKE MONEY:
-- Power plant workers burn POOP + meme tokens -> yield USDC, ETH, or BTC (your choice of reactor)
-- At STR 10 ($10 investment), you keep 40% of throughput as blue chips
+HOW IT WORKS:
+- Buy food ($0.01/meal in USDC) -> feed baseling -> LP locks in vault forever
+- Earn ~1 POOP per penny spent on food
+- Deposit POOP to gardens (earn food tokens, LP) or power plant (burn for yield)
 - Garden workers turn POOP into LP positions that earn swap fees forever
 - Every LP deposit stacks permanently -- your baseling becomes a yield-generating NFT
-- More stats = higher cut. Level 10 is the sweet spot: 20x earnings vs level 0.
-
-CAPITAL EFFICIENCY:
-- $10 entry: 1 egg + PP worker to STR 10 -> 3,000 POOP/day throughput, 40% as USDC
-- $25 entry: PP worker + garden worker -> yield + compounding LP
-- $70 entry: full 5-baseling squad (shovelers + haulers + nanny) -> self-sustaining pipeline
-- Stat curve breakpoint at level 10: first 10 points cost $1 each, after that $10 each
+- Assign baselings to jobs -- keeper auto-harvests every 2.4 hours
 
 IMPACT BONUS (not charity -- same pipeline, free PR):
 - CHAR garden retires carbon credits with every deposit
