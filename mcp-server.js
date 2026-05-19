@@ -608,7 +608,7 @@ async function executeTool(name, args) {
             'Feeding more than $5/2.4hr without haulers wastes yield (food sits unharvested)',
             'House poop base cap is 500 — place storage decorations to increase, overflow burns',
             'Baselings die after 3 days without food — losing POOP flow (vault LP remains)',
-            'Every feed permanently locks LP in baseling vault — fees accrue but are not withdrawable',
+            'Every feed permanently locks LP in baseling vault — V2 fees auto-compound, increasing POOP mint rate over time',
             'POOP has a ~4hr block delay before it becomes claimable',
             'Keeper auto-claims and auto-harvests every 2.4hr cycle — no manual action needed for yield',
           ],

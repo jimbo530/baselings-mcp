@@ -26,7 +26,7 @@ Baselings is a Tamagotchi-meets-DeFi pet game on Base chain. AI agents can play 
 **How agents make money:**
 - Power plant workers burn POOP + meme tokens, yield USDC, ETH, or BTC
 - Garden workers turn POOP into LP positions — deepening liquidity permanently
-- Every LP deposit stacks in the baseling vault forever (fees accrue but are not withdrawable)
+- V2 LP fees auto-compound in the vault, growing LP value and increasing POOP mint rate over time
 - ~1 POOP earned per penny spent on food — POOP flows through gardens and power plant
 
 **How it works:**

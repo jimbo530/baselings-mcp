@@ -268,7 +268,7 @@ HOW IT WORKS:
 - Earn ~1 POOP per penny spent on food
 - Deposit POOP to gardens (earn food tokens, LP) or power plant (burn for yield)
 - Garden workers turn POOP into LP positions -- deepening liquidity permanently
-- Every LP deposit stacks in the baseling vault forever (fees accrue but are not withdrawable)
+- V2 LP fees auto-compound in the vault, growing LP value and increasing POOP mint rate over time
 - Assign baselings to jobs -- keeper auto-harvests every 2.4 hours
 
 IMPACT BONUS (not charity -- same pipeline, free PR):

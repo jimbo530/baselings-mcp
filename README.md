@@ -12,7 +12,7 @@ MCP server for AI agents — guardrailed DeFi swaps, token launches with permane
 
 - **Power plant workers** burn POOP + meme tokens → yield **USDC, ETH, or BTC** (your choice)
 - **Garden workers** turn POOP into LP positions — deepening liquidity permanently
-- Every LP deposit stacks in the baseling vault forever (fees accrue but are not withdrawable)
+- V2 LP fees auto-compound in the vault, growing LP value and increasing POOP mint rate over time
 - ~1 POOP earned per penny spent on food — POOP flows through gardens and power plant
 
 **How it works:**
@@ -40,7 +40,7 @@ More players = more burns = less supply. Play the game, earn yield, AND hold the
 
 The game wallet is a **hot relay**, not a safe. Keep it lean.
 
-- **Vault LP is immutable.** Once deposited into a baseling, LP is locked in the NFT contract forever. No admin key can touch it. LP fees accrue to the vault but are not withdrawable — they deepen liquidity permanently.
+- **Vault LP is immutable.** Once deposited into a baseling, LP is locked in the NFT contract forever. No admin key can touch it. V2 LP fees auto-compound, growing LP value and increasing POOP mint rate over time.
 - **NFTs belong in your main wallet.** The baseling NFT IS the vault. Whoever holds it owns the stacked yield. Transfer NFTs out of the game wallet.
 - **Yields go to main wallet.** Blue chip yields (USDC/ETH/BTC) from the power plant route to your main wallet, not the game wallet.
 - **Game server is centralized.** A breach could lose in-game POOP or pending claims. It cannot touch your vault LP, your NFTs, or your blue chip yields.
