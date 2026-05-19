@@ -59,7 +59,7 @@ export TRADE_WALLET_KEY=0x...
 npx baselings-mcp
 ```
 
-> **v1.1.0**: Adds `swap_token`, `swap_quote`, `swap_status` tools. Swap guardrails enforced: $0.10 max, 60s cooldown, $1/day, 8-token allowlist.
+> **v1.1.0**: Adds `swap_token`, `swap_quote`, `swap_status` tools. Swap guardrails enforced: $0.10 max, 60s cooldown.
 >
 > **v1.2.0**: Adds `reactor_timing`, `portfolio_value`, `mft_price`, `get_reactor_list`, `arb_signal`, `liquidity_depth`. Expanded allowlist to 17 tokens. DCA automation.
 

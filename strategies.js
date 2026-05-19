@@ -146,7 +146,7 @@ const STRATEGIES = {
     ppPools: ['brett', 'buster', 'burgers'],
     playbook: [
       'Run ensure_approvals to set up token permissions',
-      'Buy eggs — sorted family 1 (BURGERS) for max meme vibes, or random for variety',
+      'Buy eggs — random for variety, or giant for bigger stats',
       'Hatch and feed with BURGERS food (cheapest, most liquid)',
       'Claim POOP after 4hr delay → deposit into house vault (deposit_poop_to_house)',
       'From house vault, sendPoop across meme pools: BRETT and BUSTER first for pure meme',
