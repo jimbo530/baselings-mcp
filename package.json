@@ -6,6 +6,10 @@
   "bin": {
     "baselings-mcp": "mcp-server.js"
   },
+  "scripts": {
+    "build": "echo \"no build step — plain JavaScript, runs as-is\"",
+    "start": "node mcp-server.js"
+  },
   "keywords": [
     "mcp",
     "model-context-protocol",
