@@ -23,7 +23,7 @@ MCP server for AI agents — guardrailed DeFi swaps, token launches with permane
 | Use POOP | Deposit to gardens (earn food/tokens) or power plant (burn for yield) |
 | Workers | Assign baselings to jobs — keeper auto-harvests every 2.4 hours |
 
-**Impact bonus** (free PR, same pipeline): CHAR retires carbon credits. TGN funds environmental projects. BURGERS feeds people IRL.
+**Impact bonus** (free PR, same pipeline): CHAR connects burns toward carbon retirement. TGN funds environmental projects. BURGERS feeds people IRL.
 
 ## Why buy MfT
 
@@ -34,7 +34,7 @@ MfT (MemeForTrees) is **deflationary**. Every game action burns MfT supply:
 - NFT purchases → 1% MfT buy + burn
 - 6 headless V3 burn machines run 24/7 on WETH, USDC, cbBTC
 
-More players = more burns = less supply. Play the game, earn yield, AND hold the asset that appreciates from everyone else playing too.
+More players = more burns = less supply. Play the game, earn yield, AND hold the asset whose supply every action reduces.
 
 ## Security model — thin pipe over forever vaults
 
@@ -188,7 +188,7 @@ Live at `https://tasern.quest/api/baseling/agent/`
 
 **Price** (1): `mft_price` — current MfT/USD price via Uniswap V3 Quoter (read-only)
 
-**Portfolio** (1): `portfolio_value` — total holdings in USD across all 14 allowed tokens (read-only)
+**Portfolio** (1): `portfolio_value` — total holdings in USD across all 17 allowed tokens (read-only)
 
 **Depth** (1): `liquidity_depth` — measure V3 pool depth in USD before X% impact; health classification (deep/thin/dry); max profitable trade sizing (read-only)
 

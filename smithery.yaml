@@ -85,7 +85,7 @@ tools:
   - resurrect_baseling: Revive dead baseling
   - ensure_approvals: Set up token approvals
 
-  # STRATEGY + ECONOMY + INFO (12 tools)
+  # STRATEGY + ECONOMY + INFO (10 tools)
   - welcome: Game overview
   - choose_strategy: Pick play style
   - next_actions: AI-recommended actions
