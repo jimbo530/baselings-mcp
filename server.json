@@ -1,7 +1,7 @@
 {
   "name": "io.github.jimbo530/baselings-mcp",
-  "version": "1.2.0",
-  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches with locked liquidity, reactor timing, portfolio tracking, liquidity depth, yield-generating pet game.",
+  "version": "1.4.0",
+  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches with permanently locked liquidity, reactor timing, portfolio tracking, liquidity depth, yield-generating pet game.",
   "author": "memefortrees.base.eth",
   "license": "MIT",
   "homepage": "https://tasern.quest/agents-onboarding.html",
@@ -15,7 +15,7 @@
   "tools": [
     "swap_status", "swap_quote", "swap_token",
     "fire_reactor",
-    "mycopad_info", "mycopad_launch", "mycopad_check_reactor", "mycopad_recent", "mycopad_invite_link",
+    "unrugable_info", "unrugable_launch", "unrugable_check_reactor", "unrugable_recent", "unrugable_invite_link",
     "get_balances", "get_my_baselings", "get_baseling", "get_food_stock", "get_garden_status",
     "get_assignments", "get_houses", "get_pending_poop", "get_egg_prices", "get_global_stats",
     "buy_egg", "hatch_egg", "buy_food", "feed_baseling", "claim_poop",
@@ -28,9 +28,8 @@
   ],
   "keywords": ["defi", "swap", "uniswap", "base-chain", "token-launch", "reactor", "burn", "deflationary", "yield", "carbon-credits", "mcp"],
   "links": {
-    "signals": "https://tasern.quest/api/unruggable/signals",
-    "performance": "https://tasern.quest/api/unruggable/performance",
-    "tokenomics": "https://tasern.quest/api/unruggable/tokenomics",
+    "tokenomics": "https://tasern.quest/api/unrugable/tokenomics",
+    "all": "https://tasern.quest/api/unrugable/all",
     "onboarding": "https://tasern.quest/agents-onboarding.html",
     "llms_txt": "https://tasern.quest/llms.txt",
     "agents_json": "https://tasern.quest/.well-known/agents.json"

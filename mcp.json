@@ -1,7 +1,7 @@
 {
   "name": "baselings-mcp",
-  "version": "1.2.0",
-  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches with locked liquidity, reactor timing, portfolio tracking, liquidity depth, yield-generating pet game.",
+  "version": "1.4.0",
+  "description": "49 MCP tools for AI agents on Base chain — DeFi swaps ($0.10 max, guardrailed), token launches with permanently locked liquidity, reactor timing, portfolio tracking, liquidity depth, yield-generating pet game.",
   "author": "memefortrees.base.eth",
   "license": "MIT",
   "homepage": "https://tasern.quest/agents-onboarding.html",
@@ -20,8 +20,8 @@
   },
   "api": {
     "rest_base": "https://tasern.quest/api/baseling/agent/",
-    "signals": "https://tasern.quest/api/unruggable/signals",
-    "performance": "https://tasern.quest/api/unruggable/performance",
+    "tokenomics": "https://tasern.quest/api/unrugable/tokenomics",
+    "all": "https://tasern.quest/api/unrugable/all",
     "llms_txt": "https://tasern.quest/llms.txt",
     "agents_json": "https://tasern.quest/.well-known/agents.json"
   },
@@ -33,7 +33,7 @@
     "tokenomics": ["mft_flywheel", "tokenomics_metrics", "why_mft"],
     "economy": ["build_phase", "feeding_guide", "economy_rules"],
     "info": ["game_guide"],
-    "launch": ["mycopad_info", "mycopad_launch", "mycopad_check_reactor", "mycopad_recent", "mycopad_invite_link"],
+    "launch": ["unrugable_info", "unrugable_launch", "unrugable_check_reactor", "unrugable_recent", "unrugable_invite_link"],
     "reactor": ["fire_reactor", "get_reactor_list", "reactor_timing"],
     "swap": ["swap_status", "swap_quote", "swap_token", "arb_signal"],
     "price": ["mft_price"],

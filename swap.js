@@ -1,4 +1,4 @@
-// Unruggable Agent Swap Module
+// Unrugable Agent Swap Module
 // Implements ALL guardrails from SWAP_GUARDRAILS.md
 // Every rule maps to a real loss event — do not weaken these checks.
 

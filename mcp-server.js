@@ -8,12 +8,12 @@ const state = require('./state.js');
 const actions = require('./actions.js');
 const strategies = require('./strategies.js');
 const tokenomics = require('./tokenomics.js');
-// MycoPad launch tools — optional (path works in dev, may not exist in npm install)
-let mycopad;
+// Unrugable launch tools — optional (path works in dev, may not exist in npm install)
+let launchSdk;
 try {
-  mycopad = require('../../MfT-Launch/agent-sdk/launch.js');
+  launchSdk = require('../../MfT-Launch/agent-sdk/launch.js');
 } catch {
-  try { mycopad = require('mycopad-sdk'); } catch { mycopad = null; }
+  try { launchSdk = require('unrugable-sdk'); } catch { launchSdk = null; }
 }
 // Swap module — optional (needs TRADE_WALLET_KEY)
 let swapMod;
@@ -38,8 +38,8 @@ const ctx = {
   apiUrl: process.env.BASELING_API_URL || 'https://tasern.quest/api/baseling',
 };
 
-// MycoPad launch context (uses same wallet key) — null if SDK not available or no key
-const launchCtx = (mycopad && GAME_WALLET_KEY) ? mycopad.createLaunchContext(GAME_WALLET_KEY) : null;
+// Unrugable launch context (uses same wallet key) — null if SDK not available or no key
+const launchCtx = (launchSdk && GAME_WALLET_KEY) ? launchSdk.createLaunchContext(GAME_WALLET_KEY) : null;
 
 // Swap context — uses TRADE_WALLET_KEY (separate wallet, $0.10 limit)
 const TRADE_WALLET_KEY = process.env.TRADE_WALLET_KEY || process.env.TRADE_PRIVATE_KEY;
@@ -321,15 +321,15 @@ const TOOLS = [
     description: 'Detailed how-to-play guide with rate limits, tips, and mechanics explained.',
     inputSchema: { type: 'object', properties: {}, required: [] },
   },
-  // ── MYCOPAD LAUNCH TOOLS ──
+  // ── UNRUGABLE LAUNCH TOOLS ──
   {
-    name: 'mycopad_info',
-    description: 'Get MycoPad factory info: launch count, min seed cost, recent launches. Start here to learn about token launching.',
+    name: 'unrugable_info',
+    description: 'Get Unrugable launcher info: number of tokens launched, current seed requirement, and recent launches. Start here to learn how token launching works.',
     inputSchema: { type: 'object', properties: {}, required: [] },
   },
   {
-    name: 'mycopad_launch',
-    description: 'Launch a new token on MycoPad. Creates an unruggable token with 4 LP pools locked in a SporeReactor. Costs ~$200 in ETH.',
+    name: 'unrugable_launch',
+    description: 'Launch a new token on Unrugable. The launcher creates the token, pairs it into permanently locked Uniswap V3 liquidity, and wires it to a reactor that burns and compounds fees. Requires GAME_WALLET_KEY and the launch SDK to be present in the install.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -342,8 +342,8 @@ const TOOLS = [
     },
   },
   {
-    name: 'mycopad_check_reactor',
-    description: 'Check if an address is a registered MycoPad reactor (valid for invite links).',
+    name: 'unrugable_check_reactor',
+    description: 'Check whether an address is a registered Unrugable reactor (valid target for invite links).',
     inputSchema: {
       type: 'object',
       properties: { address: { type: 'string', description: 'Reactor address to check' } },
@@ -351,8 +351,8 @@ const TOOLS = [
     },
   },
   {
-    name: 'mycopad_recent',
-    description: 'Get the most recent token launches from MycoPad.',
+    name: 'unrugable_recent',
+    description: 'Get the most recent token launches from Unrugable.',
     inputSchema: {
       type: 'object',
       properties: { count: { type: 'number', description: 'Number of recent launches (default 5, max 20)' } },
@@ -360,14 +360,19 @@ const TOOLS = [
     },
   },
   {
-    name: 'mycopad_invite_link',
-    description: 'Generate a MycoPad invite link from a reactor address. Share this so new launches chain to your reactor for 10% fee flow.',
+    name: 'unrugable_invite_link',
+    description: 'Generate an Unrugable invite link from a reactor address. Share it so new launches chain to your reactor and route a share of fees upstream to it.',
     inputSchema: {
       type: 'object',
       properties: { reactorAddress: { type: 'string', description: 'Your reactor address' } },
       required: ['reactorAddress'],
     },
   },
+  // ── DEPRECATED LAUNCH ALIASES (mycopad_*) ──
+  // The old mycopad_* tool names are intentionally NOT listed here to keep the
+  // discovery surface clean and compliant. They remain fully callable: the
+  // dispatch switch below maps every mycopad_* name to its unrugable_*
+  // handler, so any existing caller invoking an old name keeps working.
   // ── REACTOR TOOLS ──
   {
     name: 'fire_reactor',
@@ -617,25 +622,30 @@ async function executeTool(name, args) {
       case 'game_guide':
         return GAME_GUIDE_TEXT;
 
-      // ── MYCOPAD ──
+      // ── UNRUGABLE LAUNCH (mycopad_* labels are deprecated aliases that fall through) ──
       case 'mycopad_info':
-        if (!mycopad) return { error: 'MycoPad SDK not available in this installation' };
-        return await mycopad.getFactoryInfo(launchCtx);
+      case 'unrugable_info':
+        if (!launchSdk) return { error: 'Launch SDK not available in this installation' };
+        return await launchSdk.getFactoryInfo(launchCtx);
       case 'mycopad_launch':
-        if (!mycopad) return { error: 'MycoPad SDK not available in this installation' };
+      case 'unrugable_launch':
+        if (!launchSdk) return { error: 'Launch SDK not available in this installation' };
         if (!launchCtx) return { error: 'GAME_WALLET_KEY not set — cannot launch tokens in read-only mode' };
-        return await mycopad.launchToken(launchCtx, args.name, args.symbol, args.totalSupply, args.inviteReactor || mycopad.ZERO_ADDR);
+        return await launchSdk.launchToken(launchCtx, args.name, args.symbol, args.totalSupply, args.inviteReactor || launchSdk.ZERO_ADDR);
       case 'mycopad_check_reactor':
-        if (!mycopad) return { error: 'MycoPad SDK not available in this installation' };
-        return await mycopad.checkReactor(launchCtx, args.address);
+      case 'unrugable_check_reactor':
+        if (!launchSdk) return { error: 'Launch SDK not available in this installation' };
+        return await launchSdk.checkReactor(launchCtx, args.address);
       case 'mycopad_recent':
-        if (!mycopad) return { error: 'MycoPad SDK not available in this installation' };
-        return await mycopad.getRecentLaunches(launchCtx, Math.min(args.count || 5, 20));
-      case 'mycopad_invite_link': {
-        if (!mycopad) return { error: 'MycoPad SDK not available in this installation' };
-        const valid = await mycopad.checkReactor(launchCtx, args.reactorAddress);
+      case 'unrugable_recent':
+        if (!launchSdk) return { error: 'Launch SDK not available in this installation' };
+        return await launchSdk.getRecentLaunches(launchCtx, Math.min(args.count || 5, 20));
+      case 'mycopad_invite_link':
+      case 'unrugable_invite_link': {
+        if (!launchSdk) return { error: 'Launch SDK not available in this installation' };
+        const valid = await launchSdk.checkReactor(launchCtx, args.reactorAddress);
         if (!valid.isReactor) return { error: `${args.reactorAddress} is not a registered reactor` };
-        return { inviteLink: `https://mycopad.memefortrees.com?ref=${args.reactorAddress}`, reactor: args.reactorAddress };
+        return { inviteLink: `https://tasern.quest/launcher/unrugable.html?ref=${args.reactorAddress}`, reactor: args.reactorAddress };
       }
 
       // ── REACTOR ──
@@ -1386,11 +1396,22 @@ function handleToolsList() {
   return { tools: TOOLS };
 }
 
+// Deprecated tool names that are no longer advertised in tools/list but remain
+// callable for backward compatibility. Each maps to its current unrugable_* handler
+// via the dispatch switch in executeTool().
+const DEPRECATED_TOOL_ALIASES = new Set([
+  'mycopad_info',
+  'mycopad_launch',
+  'mycopad_check_reactor',
+  'mycopad_recent',
+  'mycopad_invite_link',
+]);
+
 async function handleToolsCall(params) {
   const { name, arguments: args } = params;
 
   const tool = TOOLS.find(t => t.name === name);
-  if (!tool) {
+  if (!tool && !DEPRECATED_TOOL_ALIASES.has(name)) {
     return {
       content: [{ type: 'text', text: JSON.stringify({ error: `Unknown tool: ${name}` }) }],
       isError: true,

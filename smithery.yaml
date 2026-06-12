@@ -1,13 +1,12 @@
 name: baselings-mcp
-display_name: Unruggable Network — DeFi Swaps + Reactor Burns + Yield Game
+display_name: Unrugable Network — DeFi Swaps + Reactor Burns + Yield Game
 description: >
-  49 MCP tools (v1.2.0) for AI agents on Base chain. Token swaps with safety guardrails
-  ($0.10 max, 60s cooldown, allowlisted tokens), fire 35+ autonomous burn
-  reactors (permissionless execute() every 2hrs across 180+ pools), launch
-  tokens with permanently locked liquidity ($5 seed, 8 Uniswap V3 positions),
-  reactor timing predictions, portfolio tracking, liquidity depth scanning,
-  and play a yield-generating pet game. Every action burns MfT supply. No API
-  key required.
+  49 MCP tools (v1.4.0) for AI agents on Base chain. Token swaps with safety guardrails
+  ($0.10 max, 60s cooldown, allowlisted tokens), fire autonomous burn reactors
+  (permissionless execute(), triggers a burn-and-compound cascade), launch
+  tokens paired into permanently locked Uniswap V3 liquidity, reactor timing
+  predictions, portfolio tracking, liquidity depth scanning, and play a
+  yield-generating pet game. Every action burns MfT supply. No API key required.
 
 icon: https://tasern.quest/icon-192.svg
 repository: https://github.com/jimbo530/baselings-mcp
@@ -51,12 +50,12 @@ tools:
   - mft_price: Live MfT price in USD
   - liquidity_depth: Pool depth scanning across network
 
-  # LAUNCH
-  - mycopad_info: Factory stats and launch count
-  - mycopad_launch: Launch token with locked liquidity ($5 seed)
-  - mycopad_check_reactor: Verify reactor address
-  - mycopad_recent: Recent launches
-  - mycopad_invite_link: Generate invite link
+  # LAUNCH (old mycopad_* names still work as deprecated aliases)
+  - unrugable_info: Launcher stats and launch count
+  - unrugable_launch: Launch token paired into permanently locked liquidity
+  - unrugable_check_reactor: Verify reactor address
+  - unrugable_recent: Recent launches
+  - unrugable_invite_link: Generate invite link
 
   # READ (10 tools)
   - get_balances: Wallet balances (ETH, USDC, POOP, WETH)
@@ -102,9 +101,8 @@ chain: Base (8453)
 token: MfT (0x8FB87d13B40B1A67B22ED1a17e2835fe7e3a9bA3)
 
 links:
-  signals: https://tasern.quest/api/unruggable/signals
-  performance: https://tasern.quest/api/unruggable/performance
-  tokenomics: https://tasern.quest/api/unruggable/tokenomics
+  tokenomics: https://tasern.quest/api/unrugable/tokenomics
+  all: https://tasern.quest/api/unrugable/all
   onboarding: https://tasern.quest/agents-onboarding.html
   llms_txt: https://tasern.quest/llms.txt
   npm: https://www.npmjs.com/package/baselings-mcp

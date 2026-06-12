@@ -61,7 +61,9 @@ npx baselings-mcp
 
 > **v1.1.0**: Adds `swap_token`, `swap_quote`, `swap_status` tools. Swap guardrails enforced: $0.10 max, 60s cooldown.
 >
-> **v1.2.0**: Adds `reactor_timing`, `portfolio_value`, `mft_price`, `get_reactor_list`, `arb_signal`, `liquidity_depth`. Expanded allowlist to 17 tokens. DCA automation.
+> **v1.2.0**: Adds `reactor_timing`, `portfolio_value`, `mft_price`, `get_reactor_list`, `arb_signal`, `liquidity_depth`. Expanded swap allowlist. DCA automation.
+>
+> **v1.4.0**: Launch tools renamed to `unrugable_*` (old `mycopad_*` names kept as deprecated aliases). Dead discovery endpoints pruned; live endpoints documented.
 
 ### Claude Desktop / Claude Code config
 
@@ -80,13 +82,24 @@ npx baselings-mcp
 }
 ```
 
+## Configuration
+
+All configuration is via environment variables. Both keys are optional — with neither set, the server starts in read-only mode and every read tool works.
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `GAME_WALLET_KEY` | No | Base-chain private key used for game write actions (buy/feed/claim/assign, etc.). Without it, write tools return a clear "read-only mode" error instead of failing silently. `AGENT_TEST_KEY` is accepted as a fallback name. |
+| `TRADE_WALLET_KEY` | No | Separate private key used only for `swap_token` execution. Quotes (`swap_quote`, `swap_status`) work without it. Keep this wallet separate from the game wallet. `TRADE_PRIVATE_KEY` is accepted as a fallback name. |
+| `BASELING_API_URL` | No | Override the REST base URL. Defaults to `https://tasern.quest/api/baseling`. |
+
+No API key, sign-up, or account is needed for read tools. The server speaks MCP over stdio (JSON-RPC on stdin/stdout) and requires Node.js 18+.
+
 ## Agent discovery endpoints (no auth)
 
 | Endpoint | What it returns |
 |----------|----------------|
-| [`/api/unruggable/signals`](https://tasern.quest/api/unruggable/signals) | Live buy signals: reactor cooldowns, MfT supply, structured opportunity |
-| [`/api/unruggable/performance`](https://tasern.quest/api/unruggable/performance) | ROI tracking: price, burns, network health, accumulation thesis |
-| [`/api/unruggable/tokenomics`](https://tasern.quest/api/unruggable/tokenomics) | Full network data: infrastructure tokens, strategies, contracts |
+| [`/api/unrugable/tokenomics`](https://tasern.quest/api/unrugable/tokenomics) | Network data: infrastructure tokens, strategies, contracts |
+| [`/api/unrugable/all`](https://tasern.quest/api/unrugable/all) | Full combined network dataset |
 | [`/llms.txt`](https://tasern.quest/llms.txt) | AI-readable full documentation |
 | [`/.well-known/agents.json`](https://tasern.quest/.well-known/agents.json) | Machine-readable capability manifest |
 
@@ -167,7 +180,7 @@ Live at `https://tasern.quest/api/baseling/agent/`
 
 **Info** (1): `game_guide`
 
-**Unruggable Launch** (5): `mycopad_info`, `mycopad_launch`, `mycopad_check_reactor`, `mycopad_recent`, `mycopad_invite_link`
+**Unrugable Launch** (5): `unrugable_info`, `unrugable_launch`, `unrugable_check_reactor`, `unrugable_recent`, `unrugable_invite_link` — launch a token paired into permanently locked Uniswap V3 liquidity and wired to a reactor that burns and compounds fees. (The former `mycopad_*` names still work as deprecated aliases so existing callers don't break.)
 
 **Reactor** (3): `fire_reactor`, `get_reactor_list`, `reactor_timing` — permissionless execute() on any reactor, triggers burn+compound cascade; list all reactors with fire-readiness; predict fire windows and Prime imminence
 
@@ -233,8 +246,7 @@ All 49 tools become native ElizaOS actions automatically.
 
 - Game: https://tasern.quest/baseling
 - API: https://tasern.quest/api/baseling/agent/guide
-- Signals: https://tasern.quest/api/unruggable/signals
-- Performance: https://tasern.quest/api/unruggable/performance
+- Tokenomics: https://tasern.quest/api/unrugable/tokenomics
 - llms.txt: https://tasern.quest/llms.txt
 - Chain: Base (8453)
 - npm: https://www.npmjs.com/package/baselings-mcp
