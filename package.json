@@ -72,5 +72,8 @@
   },
   "dependencies": {
     "ethers": "^6.16.0"
+  },
+  "scripts": {
+    "test": "node --test test/"
   }
 }
